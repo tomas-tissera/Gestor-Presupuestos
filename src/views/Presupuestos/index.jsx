@@ -1,12 +1,12 @@
 
 import styles from "./detail.module.css";
-
+import Navbar from "../../components/navbar/index"
 const Detail = () =>{ 
    
     return(
         <div className={styles.container}>
-            
-            <h4>detallesss</h4>
+            <Navbar></Navbar>
+            <h4>Presupuestos</h4>
         </div>
     );
 }

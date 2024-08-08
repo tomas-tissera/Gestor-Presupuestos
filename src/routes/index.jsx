@@ -5,7 +5,7 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import Home from "../views/home";
-import Detail from "../views/detail";
+import Presupuestos from "../views/Presupuestos";
 import Error404 from "../views/error 404";
 import Profile from "../views/profile";
 import LikedEvents from "../views/profile/components/LikedEvents";
@@ -15,8 +15,8 @@ const router = createBrowserRouter([{
     element: <Home/>,
     errorElement: <Error404/>
 },{
-    path:"/detail",
-    element: <Detail/>
+    path:"/Presupuestos",
+    element: <Presupuestos/>
 },{
     path:"/profile",
     element: <Profile/>,
