@@ -1,0 +1,52 @@
+.fomrulario{
+    padding: 0 150px;
+}
+.icono{
+    font-size: 30px;
+    transition: 1s;
+    cursor: pointer;
+    display: a;
+}
+.icono:hover{
+    color:rgb(255, 255, 255);
+    background-color: green;
+    border-radius: 100%;
+    padding: 5px;
+}
+.deletIcon{
+    font-size: 35px;
+    display: flex;
+    text-align: center;
+    transition: 1s;
+    
+}
+.deletIcon:hover{
+    color:rgb(245, 52, 52);
+}
+.textLeft{
+    text-align: left;
+    width: 100%;
+}
+.cargar{
+    padding: 15px 0;
+}
+
+.iconContainer {
+    position: relative;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.divider {
+    border: 1px solid #ccc;
+    margin: 0;
+}
+.iconLink {
+    position: absolute;
+    top: -15px; /* Ajusta esta propiedad según el tamaño del icono */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white; /* Opcional: para que el fondo del icono sea blanco */
+    color: #212529;
+    padding: 0 5px;
+}
