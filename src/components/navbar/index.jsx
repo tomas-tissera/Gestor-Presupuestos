@@ -11,7 +11,7 @@ function ColorSchemesExample() {
         <Navbar bg="dark" data-bs-theme="dark" className={Styles.navbar}>
             <Container>
             <Navbar.Brand href="#home">
-                <img src="../../../public/Sin título-1.png" className={Styles.imgIcon}></img>
+                <img src="/icon.png" className={Styles.imgIcon}></img>
             </Navbar.Brand>
             <Nav className="me-auto">
                 <Nav.Link href="/">Inicio</Nav.Link>
