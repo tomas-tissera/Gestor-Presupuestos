@@ -115,10 +115,10 @@ const CrearPresupuesto = () => {
                     {componentes.map((componente, index) => (
                         <div key={index} className={styles.componenteContainer}>
                             <Form.Group as={Row} className="mb-3">
-                                <Form.Label column sm="2">
+                                {/* <Form.Label column sm="2">
                                     Componente
-                                </Form.Label>
-                                <Col sm="2">
+                                </Form.Label> */}
+                                <Col sm="3">
                                     <Form.Control
                                         as="textarea"
                                         rows={1}
@@ -128,7 +128,7 @@ const CrearPresupuesto = () => {
                                         onChange={(e) => handleInputChange(index, e)}
                                     />
                                 </Col>
-                                <Col sm="4">
+                                <Col sm="5">
                                     <Form.Control
                                         as="textarea"
                                         rows={1}
@@ -167,7 +167,7 @@ const CrearPresupuesto = () => {
                                 </Col>
                             </Form.Group>
 
-                            <div className={styles.subcomponentesContainer}>
+                            {/* <div className={styles.subcomponentesContainer}>
                                 {componente.subcomponentes.map((subcomponente, subIndex) => (
                                     <div key={subIndex} className={styles.subcomponente}>
                                         <Form.Group as={Row} className="mb-3">
@@ -207,7 +207,7 @@ const CrearPresupuesto = () => {
                                         <MdOutlineExpandMore className={styles.icono} />
                                     </a>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     ))}
                     <div className={styles.iconContainer}>
