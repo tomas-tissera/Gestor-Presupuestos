@@ -7,7 +7,8 @@ const Detail = () =>{
     return(
         <div className={styles.container}>
             <Navbar></Navbar>
-            <h4>Presupuestos</h4>
+            <h4 className={styles.titulo}>Presupuestos</h4>
+            <hr></hr>
             <CrearPresupuesto></CrearPresupuesto>
         </div>
     );

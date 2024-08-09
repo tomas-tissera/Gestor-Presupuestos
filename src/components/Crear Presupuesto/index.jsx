@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
 import styles from "./cPresupuesto.module.css";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { FaDeleteLeft } from "react-icons/fa6";
@@ -67,7 +68,6 @@ const CrearPresupuesto = () => {
             };
     return (
         <div>
-            <h4>Crear Presupuestos</h4>
             <div className={styles.fomrulario}>
                 <Form>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -165,6 +165,11 @@ const CrearPresupuesto = () => {
                         <a onClick={agregarComponente} className={styles.iconLink}>
                             <MdOutlinePlaylistAdd className={styles.icono} />
                         </a>
+                    </div>
+                    <div className="d-grid gap-2">
+                        <Button variant="primary" size="lg" type="submit">
+                            Generar Presupuesto
+                        </Button>
                     </div>
                 </Form>
             </div>
