@@ -27,64 +27,95 @@
 .textLeft{
     text-align: left;
     width: 100%;
-}
-.cargar{
-    padding: 15px 0;
-}
-
-.iconContainer {
-    position: relative;
-    text-align: center;
-    margin: 20px 0;
-    padding: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.divider {
-    border: 1px solid #ccc;
-    margin: 0;
-}
-.iconLink {
-    position: absolute;
-    top: -15px; /* Ajusta esta propiedad según el tamaño del icono */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: white; /* Opcional: para que el fondo del icono sea blanco */
-    color: #212529;
-    padding: 0 5px;
-}
 .componenteContainer {
-    position: relative;
-    padding-left: 20px;
-    margin-bottom: 20px;
+    padding: 10px;
+    border-left: 4px solid #007bff;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
-.subcomponentesContainer {
-    margin-left: 40px;
-    position: relative;
-    padding-left: 20px;
-}
+/* Estilo para el contenedor de subcomponentes */
+/* .subcomponentesContainer {
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 2px dashed #6c757d;
+    margin-top: 10px;
+} */
 
-.subcomponentesContainer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10px;
-    width: 2px;
-    height: 100%;
-    background-color: #ccc;
+/* Estilo para ocultar el borde punteado si no hay subcomponentes */
+.noSubcomponentes .subcomponentesContainer {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
 }
 
 .subcomponente {
-    position: relative;
-    padding-left: 20px;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
 }
 
-.subcomponente::before {
-    content: '';
+.subcomponenteLabel {
+    font-style: italic;
+}
+
+/* Íconos */
+.iconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.iconLink {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.iconLink:hover {
+    color: #0056b3;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+    position: relative;
+}
+
+.divider:before {
+    content: "";
+    display: inline-block;
     position: absolute;
-    top: 15px;
-    left: -30px;
-    width: 30px;
-    height: 2px;
-    background-color: #ccc;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -10px;
+    background: white;
+    padding: 0 10px;
+}
+
+.icono {
+    font-size: 24px;
+    margin-left: 8px;
+}
+
+.deletIcon {
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.deletIcon:hover {
+    color: #a71d2a;
 }
