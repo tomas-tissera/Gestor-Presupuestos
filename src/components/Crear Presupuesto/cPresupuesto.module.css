@@ -35,6 +35,7 @@
     position: relative;
     text-align: center;
     margin: 20px 0;
+    padding: 15px;
 }
 
 .divider {
@@ -49,4 +50,40 @@
     background-color: white; /* Opcional: para que el fondo del icono sea blanco */
     color: #212529;
     padding: 0 5px;
+}
+.componenteContainer {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.subcomponentesContainer {
+    margin-left: 40px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.subcomponentesContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 2px;
+    height: 100%;
+    background-color: #ccc;
+}
+
+.subcomponente {
+    position: relative;
+    padding-left: 20px;
+}
+
+.subcomponente::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: -30px;
+    width: 30px;
+    height: 2px;
+    background-color: #ccc;
 }
