@@ -1,4 +1,5 @@
 import Navbar from "../../components/navbar";
+import Presupuestos from "../../components/mostrar Presupuestos";
 const Home = () => {
    
     return (
@@ -6,6 +7,7 @@ const Home = () => {
            <div>
                 <Navbar/>
                 Homee
+                <Presupuestos></Presupuestos>
             </div>
         </>
 )};
