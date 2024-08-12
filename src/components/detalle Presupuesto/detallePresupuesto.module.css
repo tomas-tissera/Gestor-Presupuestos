@@ -1,0 +1,75 @@
+/* src/components/detallePresupuesto.module.css */
+
+.container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h4 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+h5 {
+    margin-top: 30px;
+    font-size: 20px;
+    color: #555;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+h6 {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #666;
+}
+
+.componente,
+.subcomponente {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.componente p,
+.subcomponente p {
+    margin: 5px 0;
+}
+
+.componente strong,
+.subcomponente strong {
+    color: #333;
+}
+
+.error {
+    color: red;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+p {
+    margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .componente,
+    .subcomponente {
+        padding: 10px;
+    }
+
+    h4,
+    h5,
+    h6 {
+        font-size: smaller;
+    }
+}
