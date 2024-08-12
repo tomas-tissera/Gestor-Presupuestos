@@ -6,12 +6,13 @@ import Button from 'react-bootstrap/Button';
 import styles from "./cPresupuesto.module.css";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { FaDeleteLeft } from "react-icons/fa6";
-import { MdOutlineExpandMore } from "react-icons/md";
-import { RiDeleteBin5Fill } from "react-icons/ri";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../../firebase'; // Asegúrate de que la ruta al archivo firebase.js sea correcta
 
 const CrearPresupuesto = () => {
     const [componentes, setComponentes] = useState([{ nombre: '',descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
-
+    const [nombreProyecto, setNombreProyecto] = useState("");
+    const [descripcionProyecto, setDescripcionProyecto] = useState("");
     const agregarComponente = () => {
         setComponentes([...componentes, { nombre: '',descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
     };
@@ -91,22 +92,56 @@ const CrearPresupuesto = () => {
 
     const calcularTotalGeneral = () => {
         return componentes.reduce((total, componente) => {
-            return total + calcularTotalComponente(componente);
+            const totalSubcomponentes = componente.subcomponentes.reduce((subTotal, sub) => {
+                return subTotal + (parseFloat(sub.precio.replace('$', '')) * sub.cantidad || 1);
+            }, 0);
+    
+            const totalComponente = (parseFloat(componente.precio.replace('$', '')) * componente.cantidad || 1) + totalSubcomponentes;
+            return total + totalComponente;
         }, 0);
     };
-
+    
+    const guardarPresupuesto = async (e) => {
+        e.preventDefault();
+    
+        const proyecto = {
+            nombre: nombreProyecto, // Necesitas capturar este estado también
+            descripcion: descripcionProyecto, // Necesitas capturar este estado también
+            componentes: componentes,
+            total: calcularTotalGeneral() // Función que calcula el total
+        };
+    
+        try {
+            const docRef = await addDoc(collection(db, "proyectos"), proyecto);
+            console.log("Presupuesto guardado con ID: ", docRef.id);
+            // Puedes agregar aquí una notificación al usuario o redirigirlo a otra página
+        } catch (e) {
+            console.error("Error al guardar el presupuesto: ", e);
+        }
+    };
     return (
         <div>
             <div className={styles.fomrulario}>
                 <Form>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                        <Form.Label>Nombre del Proyecto</Form.Label>
-                        <Form.Control type="text" placeholder="Nombre del Proyecto" />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                        <Form.Label>Descripcion:</Form.Label>
-                        <Form.Control as="textarea" rows={3} placeholder="Descripcion" />
-                    </Form.Group>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Nombre del Proyecto</Form.Label>
+                    <Form.Control 
+                        type="text" 
+                        placeholder="Nombre del Proyecto" 
+                        value={nombreProyecto} 
+                        onChange={(e) => setNombreProyecto(e.target.value)} 
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Descripcion:</Form.Label>
+                    <Form.Control 
+                        as="textarea" 
+                        rows={3} 
+                        placeholder="Descripcion"
+                        value={descripcionProyecto}
+                        onChange={(e) => setDescripcionProyecto(e.target.value)} 
+                    />
+                </Form.Group>
                     <Form.Label column sm="2" className={styles.textLeft}>
                         <p className={styles.textLeft}>
                             Componentes
@@ -222,7 +257,7 @@ const CrearPresupuesto = () => {
                         </Col>
                     </Form.Group>
                     <div className="d-grid gap-2">
-                        <Button variant="primary" size="lg" type="submit">
+                        <Button variant="primary" size="lg" type="submit" onClick={guardarPresupuesto}>
                             Generar Presupuesto
                         </Button>
                     </div>
