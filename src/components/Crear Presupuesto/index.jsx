@@ -3,18 +3,24 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import styles from "./cPresupuesto.module.css";
-import { MdOutlinePlaylistAdd } from "react-icons/md";
-import { FaDeleteLeft } from "react-icons/fa6";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from '../../firebase'; // Asegúrate de que la ruta al archivo firebase.js sea correcta
+import Spinner from 'react-bootstrap/Spinner';
+import Alert from 'react-bootstrap/Alert';
+import { FaDeleteLeft } from 'react-icons/fa6';
+import { MdOutlinePlaylistAdd, MdOutlineExpandMore } from 'react-icons/md';
+import { RiDeleteBin5Fill } from 'react-icons/ri';
+import { db } from '../../firebase'; // Asegúrate de ajustar la ruta si es necesario
+import { collection, addDoc } from 'firebase/firestore';
+import styles from './cPresupuesto.module.css';
 
 const CrearPresupuesto = () => {
-    const [componentes, setComponentes] = useState([{ nombre: '',descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
-    const [nombreProyecto, setNombreProyecto] = useState("");
-    const [descripcionProyecto, setDescripcionProyecto] = useState("");
+    const [nombreProyecto, setNombreProyecto] = useState('');
+    const [descripcionProyecto, setDescripcionProyecto] = useState('');
+    const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
+    const [loading, setLoading] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
     const agregarComponente = () => {
-        setComponentes([...componentes, { nombre: '',descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
+        setComponentes([...componentes, { nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
     };
 
     const handleInputChange = (index, event) => {
@@ -34,13 +40,13 @@ const CrearPresupuesto = () => {
     const handleCantidadChange = (index, event) => {
         const { value } = event.target;
         const nuevosComponentes = [...componentes];
-        nuevosComponentes[index].cantidad = parseInt(value) || 1;
+        nuevosComponentes[index].cantidad = parseInt(value, 10) || 1;
         setComponentes(nuevosComponentes);
     };
 
     const agregarSubcomponente = (indexComponente) => {
         const nuevosComponentes = [...componentes];
-        nuevosComponentes[indexComponente].subcomponentes.push({ nombre: '', precio: '' });
+        nuevosComponentes[indexComponente].subcomponentes.push({ nombre: '', precio: '', cantidad: 1 });
         setComponentes(nuevosComponentes);
     };
 
@@ -56,6 +62,30 @@ const CrearPresupuesto = () => {
         }
 
         setComponentes(nuevosComponentes);
+    };
+
+    const handleCantidadSubcomponenteChange = (indexComponente, indexSubcomponente, event) => {
+        const { value } = event.target;
+        const nuevosComponentes = [...componentes];
+        nuevosComponentes[indexComponente].subcomponentes[indexSubcomponente].cantidad = parseInt(value, 10) || 1;
+        setComponentes(nuevosComponentes);
+    };
+
+    const calcularPrecioComponente = (componente) => {
+        return componente.subcomponentes.reduce((total, subcomponente) => {
+            const precio = parseFloat(subcomponente.precio.replace('$', '')) || 0;
+            return total + precio * (subcomponente.cantidad || 1);
+        }, 0);
+    };
+
+    const calcularTotalGeneral = () => {
+        return componentes.reduce((total, componente) => {
+            const precioComponente = componente.subcomponentes.length > 0 
+                ? calcularPrecioComponente(componente)
+                : parseFloat(componente.precio.replace('$', '')) || 0;
+            const totalComponente = precioComponente * (componente.cantidad || 1);
+            return total + totalComponente;
+        }, 0);
     };
 
     const formatCurrency = (value) => {
@@ -74,74 +104,85 @@ const CrearPresupuesto = () => {
         setComponentes(nuevosComponentes);
     };
 
-    const calcularPrecioComponente = (componente) => {
-        if (componente.subcomponentes.length > 0) {
-            return componente.subcomponentes.reduce((total, sub) => {
-                const precioSubcomponente = parseFloat(sub.precio.replace('$', '')) || 0;
-                return total + precioSubcomponente;
-            }, 0);
-        } else {
-            return parseFloat(componente.precio.replace('$', '')) || 0;
-        }
-    };
-
-    const calcularTotalComponente = (componente) => {
-        const precioComponente = calcularPrecioComponente(componente);
-        return precioComponente * componente.cantidad;
-    };
-
-    const calcularTotalGeneral = () => {
-        return componentes.reduce((total, componente) => {
-            const totalSubcomponentes = componente.subcomponentes.reduce((subTotal, sub) => {
-                return subTotal + (parseFloat(sub.precio.replace('$', '')) * sub.cantidad || 1);
-            }, 0);
-    
-            const totalComponente = (parseFloat(componente.precio.replace('$', '')) * componente.cantidad || 1) + totalSubcomponentes;
-            return total + totalComponente;
-        }, 0);
-    };
-    
     const guardarPresupuesto = async (e) => {
         e.preventDefault();
-    
+
+        // Validar que todos los componentes tengan nombre, precio y cantidad
+        for (const componente of componentes) {
+            if (!componente.nombre || !componente.precio || !componente.cantidad) {
+                alert("Todos los campos del componente son obligatorios.");
+                return;
+            }
+
+            // Validar que todos los subcomponentes tengan nombre, precio y cantidad
+            for (const subcomponente of componente.subcomponentes) {
+                if (!subcomponente.nombre || !subcomponente.precio || !subcomponente.cantidad) {
+                    alert("Todos los campos del subcomponente son obligatorios.");
+                    return;
+                }
+            }
+        }
+
+        setLoading(true);
+
         const proyecto = {
-            nombre: nombreProyecto, // Necesitas capturar este estado también
-            descripcion: descripcionProyecto, // Necesitas capturar este estado también
+            nombre: nombreProyecto,
+            descripcion: descripcionProyecto,
             componentes: componentes,
-            total: calcularTotalGeneral() // Función que calcula el total
+            total: calcularTotalGeneral(),
         };
-    
+
         try {
-            const docRef = await addDoc(collection(db, "proyectos"), proyecto);
-            console.log("Presupuesto guardado con ID: ", docRef.id);
-            // Puedes agregar aquí una notificación al usuario o redirigirlo a otra página
+            await addDoc(collection(db, "proyectos"), proyecto);
+            setLoading(false);
+            setShowAlert(true);
+
+            setNombreProyecto('');
+            setDescripcionProyecto('');
+            setComponentes([{ nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
+
+            setTimeout(() => setShowAlert(false), 3000);
         } catch (e) {
+            setLoading(false);
             console.error("Error al guardar el presupuesto: ", e);
         }
     };
+
     return (
         <div>
             <div className={styles.fomrulario}>
+                {loading && (
+                    <div className={styles.loadingContainer}>
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </Spinner>
+                    </div>
+                )}
+                {showAlert && (
+                    <Alert variant="success" className={styles.alert}>
+                        Presupuesto generado con éxito.
+                    </Alert>
+                )}
                 <Form>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Nombre del Proyecto</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        placeholder="Nombre del Proyecto" 
-                        value={nombreProyecto} 
-                        onChange={(e) => setNombreProyecto(e.target.value)} 
-                    />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Descripcion:</Form.Label>
-                    <Form.Control 
-                        as="textarea" 
-                        rows={3} 
-                        placeholder="Descripcion"
-                        value={descripcionProyecto}
-                        onChange={(e) => setDescripcionProyecto(e.target.value)} 
-                    />
-                </Form.Group>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Nombre del Proyecto</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            placeholder="Nombre del Proyecto" 
+                            value={nombreProyecto} 
+                            onChange={(e) => setNombreProyecto(e.target.value)} 
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <Form.Label>Descripcion:</Form.Label>
+                        <Form.Control 
+                            as="textarea" 
+                            rows={3} 
+                            placeholder="Descripcion"
+                            value={descripcionProyecto}
+                            onChange={(e) => setDescripcionProyecto(e.target.value)} 
+                        />
+                    </Form.Group>
                     <Form.Label column sm="2" className={styles.textLeft}>
                         <p className={styles.textLeft}>
                             Componentes
@@ -150,9 +191,6 @@ const CrearPresupuesto = () => {
                     {componentes.map((componente, index) => (
                         <div key={index} className={styles.componenteContainer}>
                             <Form.Group as={Row} className="mb-3">
-                                {/* <Form.Label column sm="2">
-                                    Componente
-                                </Form.Label> */}
                                 <Col sm="3">
                                     <Form.Control
                                         as="textarea"
@@ -167,7 +205,7 @@ const CrearPresupuesto = () => {
                                     <Form.Control
                                         as="textarea"
                                         rows={1}
-                                        placeholder="descripcion"
+                                        placeholder="Descripcion"
                                         name="descripcion"
                                         value={componente.descripcion}
                                         onChange={(e) => handleInputChange(index, e)}
@@ -201,48 +239,49 @@ const CrearPresupuesto = () => {
                                     />
                                 </Col>
                             </Form.Group>
-
-                            {/* <div className={styles.subcomponentesContainer}>
-                                {componente.subcomponentes.map((subcomponente, subIndex) => (
-                                    <div key={subIndex} className={styles.subcomponente}>
-                                        <Form.Group as={Row} className="mb-3">
-                                            <Form.Label column sm="2" className={styles.subcomponenteLabel}>
-                                                Subcomponente
-                                            </Form.Label>
-                                            <Col sm="7">
-                                                <Form.Control
-                                                    as="textarea"
-                                                    rows={1}
-                                                    placeholder="Nombre"
-                                                    name="nombre"
-                                                    value={subcomponente.nombre}
-                                                    onChange={(e) => handleSubcomponenteChange(index, subIndex, e)}
-                                                />
-                                            </Col>
-                                            <Col sm="2">
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Precio"
-                                                    name="precio"
-                                                    value={subcomponente.precio}
-                                                    onChange={(e) => handleSubcomponenteChange(index, subIndex, e)}
-                                                />
-                                            </Col>
-                                            <Col sm="1">
-                                                <RiDeleteBin5Fill
-                                                    className={styles.deletIcon}
-                                                    onClick={() => eliminarSubcomponente(index, subIndex)}
-                                                />
-                                            </Col>
-                                        </Form.Group>
+                            {componente.subcomponentes.length > 0 && (
+                                <div className={styles.subcomponentesContainer}>
+                                    {componente.subcomponentes.map((subcomponente, subIndex) => (
+                                        <div key={subIndex} className={styles.subcomponente}>
+                                            <Form.Group as={Row} className="mb-3">
+                                                <Form.Label column sm="2" className={styles.subcomponenteLabel}>
+                                                    Subcomponente
+                                                </Form.Label>
+                                                <Col sm="7">
+                                                    <Form.Control
+                                                        as="textarea"
+                                                        rows={1}
+                                                        placeholder="Nombre"
+                                                        name="nombre"
+                                                        value={subcomponente.nombre}
+                                                        onChange={(e) => handleSubcomponenteChange(index, subIndex, e)}
+                                                    />
+                                                </Col>
+                                                <Col sm="2">
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Precio"
+                                                        name="precio"
+                                                        value={subcomponente.precio}
+                                                        onChange={(e) => handleSubcomponenteChange(index, subIndex, e)}
+                                                    />
+                                                </Col>
+                                                <Col sm="1">
+                                                    <RiDeleteBin5Fill
+                                                        className={styles.deletIcon}
+                                                        onClick={() => eliminarSubcomponente(index, subIndex)}
+                                                    />
+                                                </Col>
+                                            </Form.Group>
+                                        </div>
+                                    ))}
+                                    <div className={styles.iconContainer}>
+                                        <a onClick={() => agregarSubcomponente(index)} className={styles.iconLink}>
+                                            <MdOutlineExpandMore className={styles.icono} />
+                                        </a>
                                     </div>
-                                ))}
-                                <div className={styles.iconContainer}>
-                                    <a onClick={() => agregarSubcomponente(index)} className={styles.iconLink}>
-                                        <MdOutlineExpandMore className={styles.icono} />
-                                    </a>
                                 </div>
-                            </div> */}
+                            )}
                         </div>
                     ))}
                     <div className={styles.iconContainer}>
@@ -257,7 +296,13 @@ const CrearPresupuesto = () => {
                         </Col>
                     </Form.Group>
                     <div className="d-grid gap-2">
-                        <Button variant="primary" size="lg" type="submit" onClick={guardarPresupuesto}>
+                        <Button 
+                            variant="primary" 
+                            size="lg" 
+                            type="submit" 
+                            onClick={guardarPresupuesto}
+                            disabled={calcularTotalGeneral() === 0}  // Deshabilitar si el total es 0
+                        >
                             Generar Presupuesto
                         </Button>
                     </div>
@@ -266,4 +311,5 @@ const CrearPresupuesto = () => {
         </div>
     );
 };
+
 export default CrearPresupuesto;
