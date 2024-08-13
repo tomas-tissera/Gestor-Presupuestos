@@ -283,11 +283,12 @@ function DPresupuesto() {
                                 <Button variant="primary" onClick={agregarComponente}>Añadir</Button>
                             </Col>
                         </Form.Group>
-
-                        {showSaveNotice && (
-                            <Button variant="success" onClick={guardarCambios}>Guardar Cambios</Button>
-                        )}
-                        <Button variant="secondary" onClick={handleGenerarPDF}>Generar PDF</Button>
+                        <div className={styles.botones}>
+                            {showSaveNotice && (
+                                <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar}>Guardar Cambios</Button>
+                            )}
+                            <Button variant="secondary" onClick={handleGenerarPDF} className={styles.botonGenerar}>Generar PDF</Button>
+                        </div>
                     </div>
                 ) : (
                     <p>Cargando...</p>

@@ -107,7 +107,14 @@ p {
     .btn {
         margin-top: 10px;
     }
-    
+    .botones{
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+    }
+    .botonGenerar{
+        margin: 5px;
+    }
 @media (max-width: 768px) {
     .container {
         padding: 15px;
