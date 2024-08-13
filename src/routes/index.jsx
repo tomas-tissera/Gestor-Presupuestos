@@ -7,7 +7,7 @@ import Presupuestos from "../views/Presupuestos";
 import Error404 from "../views/error 404";
 import Profile from "../views/profile";
 import DPresupuesto from "../components/detalle Presupuesto";
-
+import InfoPage from "../views/InfoPage";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -25,7 +25,11 @@ const router = createBrowserRouter([
     {
         path: "/presupuesto/:id",
         element: <DPresupuesto />,
-    }
+    },
+    {
+        path: "/Info",
+        element: <InfoPage />,
+    },
 ]);
 
 const MyRoutes = () => <RouterProvider router={router} />;

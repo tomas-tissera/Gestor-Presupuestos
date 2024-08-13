@@ -69,6 +69,17 @@ p {
     .div3 { grid-area: 1 / 5 / 2 / 6; }
     .div4 { grid-area: 1 / 6 / 2 / 7; }
     .div5 { grid-area: 2 / 1 / 3 / 7; }
+    .deletIcon {
+        color: #dc3545;
+        cursor: pointer;
+        font-size: 30px;
+        transition: color 0.3s ease;
+    }
+    
+    .deletIcon:hover {
+        color: #a71d2a;
+    }
+    
 @media (max-width: 768px) {
     .container {
         padding: 15px;

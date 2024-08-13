@@ -1,0 +1,31 @@
+/* InfoPage.module.css */
+.container {
+    padding: 20px;
+  }
+  
+  .heading {
+    margin-bottom: 20px;
+  }
+  
+  .section {
+    margin-bottom: 15px;
+  }
+  
+  .title {
+    font-weight: bold;
+  }
+  
+  .list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .listItem {
+    margin-bottom: 10px;
+  }
+  
+  .footer {
+    margin-top: 20px;
+    font-style: italic;
+  }
+  
