@@ -73,11 +73,39 @@ p {
         color: #dc3545;
         cursor: pointer;
         font-size: 30px;
-        transition: color 0.3s ease;
+        transition: color 0.3s ease;    
     }
     
     .deletIcon:hover {
         color: #a71d2a;
+    }
+    .container {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+    
+    .deletIcon {
+        color: red;
+        cursor: pointer;
+    }
+    
+    h4 {
+        margin-bottom: 20px;
+    }
+    
+    h5 {
+        margin-top: 20px;
+    }
+    
+    .btn {
+        margin-top: 10px;
     }
     
 @media (max-width: 768px) {

@@ -7,6 +7,7 @@ import styles from "./detallePresupuesto.module.css";
 import Navbar from "../navbar/index";
 import { Form, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import { FaDeleteLeft } from 'react-icons/fa6';
+import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de generación de PDF
 
 function DPresupuesto() {
     const { id } = useParams();
@@ -159,13 +160,19 @@ function DPresupuesto() {
         }
     };
 
+    const handleGenerarPDF = () => {
+        if (presupuesto) {
+            GenerarPDF(presupuesto);
+        }
+    };
+
     if (error) {
         return <p className={styles.error}>{error}</p>;
     }
 
     return (
         <>
-            <Navbar></Navbar>
+            <Navbar />
             <div className={styles.container}>
                 <h4>Detalles del Presupuesto</h4>
                 {isLoading && <Spinner animation="border" variant="primary" />} {/* Círculo de carga */}
@@ -280,6 +287,7 @@ function DPresupuesto() {
                         {showSaveNotice && (
                             <Button variant="success" onClick={guardarCambios}>Guardar Cambios</Button>
                         )}
+                        <Button variant="secondary" onClick={handleGenerarPDF}>Generar PDF</Button>
                     </div>
                 ) : (
                     <p>Cargando...</p>
