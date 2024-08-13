@@ -6,7 +6,6 @@ const Home = () => {
         <>
            <div>
                 <Navbar/>
-                Homee
                 <Presupuestos></Presupuestos>
             </div>
         </>
