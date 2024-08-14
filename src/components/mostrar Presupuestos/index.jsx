@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase'; // Asegúrate de que la ruta sea correcta
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from "./mPresupuestos.module.css";
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap'; // Importar el componente Spinner
+import Swal from 'sweetalert2'; // Importar SweetAlert2
 
 function mPresupuestos() {
     const [presupuestos, setPresupuestos] = useState([]);
@@ -37,6 +38,34 @@ function mPresupuestos() {
         navigate(`/presupuesto/${id}`); // Navegar a la ruta de detalles del presupuesto
     };
 
+    const eliminarPresupuesto = async (id) => {
+        const result = await Swal.fire({
+            title: '¿Está seguro?',
+            text: "Una vez eliminado, no podrás recuperar este presupuesto.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminarlo',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await deleteDoc(doc(db, "proyectos", id));
+                setPresupuestos(presupuestos.filter(presupuesto => presupuesto.id !== id)); // Remover el presupuesto del estado
+                Swal.fire(
+                    'Eliminado',
+                    'El presupuesto ha sido eliminado.',
+                    'success'
+                );
+            } catch (err) {
+                console.error("Error al eliminar el presupuesto: ", err);
+                setError("Error al eliminar el presupuesto.");
+            }
+        }
+    };
+
     return (
         <div className={styles.container}>
             {loading ? (
@@ -54,10 +83,11 @@ function mPresupuestos() {
                         <ul className={styles.lista}>
                             {presupuestos.map(presupuesto => (
                                 <li key={presupuesto.id} className={styles.item}>
-                                    <div>
+                                    <div className={styles.itemText}>
                                         <strong>{presupuesto.nombre}</strong> - Total: ${presupuesto.total}
                                     </div>
                                     <button onClick={() => verDetalles(presupuesto.id)}>Ver detalles</button>
+                                    <button onClick={() => eliminarPresupuesto(presupuesto.id)} className={styles.deleteButton}>Eliminar</button>
                                 </li>
                             ))}
                         </ul>
