@@ -226,6 +226,7 @@ function DPresupuesto() {
                                         onChange={(e) => handleCantidadChange(index, e)}
                                         min={1}
                                         max={10}
+                                        className={styles.customNumberInput} // Usa el nombre correcto de la clase CSS
                                     />
                                 </Col>
                                 <Col sm="1">

@@ -32,7 +32,7 @@ h6 {
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(255, 0, 0, 0.1);
     background-color: #f9f9f9;
 }
 
@@ -80,7 +80,7 @@ p {
         color: #a71d2a;
     }
     .container {
-        padding: 20px;
+        padding: 45px;
         background-color: #f8f9fa;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -114,6 +114,18 @@ p {
     }
     .botonGenerar{
         margin: 5px;
+    }
+    .custom-number-input {
+        width: 80px; /* Ajusta el ancho según sea necesario */
+        height: 36px; /* Ajusta la altura según sea necesario */
+        font-size: 14px; /* Tamaño de la fuente del texto */
+        padding: 4px 8px; /* Espaciado interno del input */
+    }
+    
+    .custom-number-input::-webkit-inner-spin-button,
+    .custom-number-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
     
 @media (max-width: 768px) {

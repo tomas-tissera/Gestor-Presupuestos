@@ -127,3 +127,7 @@ button:first-of-type:hover {
 .itemText{
     text-align: left;
 }
+.deleteIcon{
+    font-size: 20px;
+    padding: 0 0 3px 3px;
+}

@@ -6,6 +6,7 @@ import styles from "./mPresupuestos.module.css";
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap'; // Importar el componente Spinner
 import Swal from 'sweetalert2'; // Importar SweetAlert2
+import { TbTrashX } from "react-icons/tb";
 
 function mPresupuestos() {
     const [presupuestos, setPresupuestos] = useState([]);
@@ -87,7 +88,11 @@ function mPresupuestos() {
                                         <strong>{presupuesto.nombre}</strong> - Total: ${presupuesto.total}
                                     </div>
                                     <button onClick={() => verDetalles(presupuesto.id)}>Ver detalles</button>
-                                    <button onClick={() => eliminarPresupuesto(presupuesto.id)} className={styles.deleteButton}>Eliminar</button>
+                                    
+                                    <button onClick={() => eliminarPresupuesto(presupuesto.id)} className={styles.deleteButton}>
+                                        Eliminar
+                                        <TbTrashX className={styles.deleteIcon}/>
+                                    </button>
                                 </li>
                             ))}
                         </ul>
