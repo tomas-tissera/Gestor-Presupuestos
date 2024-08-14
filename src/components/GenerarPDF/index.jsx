@@ -3,48 +3,69 @@ import 'jspdf-autotable';
 
 const GenerarPDF = (presupuesto) => {
     const doc = new jsPDF();
-    
-    // Estilo del encabezado
-    doc.setFont('Arial', 'bold');
-    doc.setFontSize(20);
-    doc.text('Detalles del Presupuesto', 14, 20);
 
+
+    // Añadir el logo
+    const imgData = '/icon.png'; // Ruta a tu imagen de logo
+    doc.addImage(imgData, 'PNG', 14, 10, 30, 20); // Posición y tamaño del logo
+
+    // Estilo del encabezado
+    doc.setFont('Helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(34, 34, 34); // Color de texto oscuro
+    doc.text('Detalles del Presupuesto', 60, 25); // Centrar texto ajustando la posición
+
+    // Información del proyecto
     doc.setFontSize(14);
-    doc.setFont('Arial', 'normal');
-    doc.text(`Nombre del Proyecto: ${presupuesto.nombre}`, 14, 30);
-    doc.text(`Descripción: ${presupuesto.descripcion}`, 14, 40);
-    doc.text(`Total: $${presupuesto.total}`, 14, 50);
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(54, 54, 54); // Color de texto secundario
+    doc.text(`Nombre del Proyecto: ${presupuesto.nombre}`, 14, 50);
+    doc.text(`Descripción: ${presupuesto.descripcion}`, 14, 60);
+    doc.text(`Total: $${presupuesto.total}`, 14, 70);
 
     // Tabla de componentes
     const componentesData = presupuesto.componentes.map(comp => [
         comp.nombre,
         comp.descripcion,
-        `$${comp.precio}`,
+        `$${comp.precio.toFixed(2)}`,
         comp.cantidad,
-        `$${comp.precio * comp.cantidad}`
+        `$${(comp.precio * comp.cantidad).toFixed(2)}`
     ]);
 
     doc.autoTable({
-        startY: 60,
+        startY: 80,
         head: [['Nombre', 'Descripción', 'Precio', 'Cantidad', 'Total']],
         body: componentesData,
         styles: {
-            font: 'Arial',
+            font: 'Helvetica',
             fontSize: 12,
-            cellPadding: 4,
-            halign: 'left',
+            cellPadding: 5,
+            halign: 'center',
             valign: 'middle',
-            overflow: 'linebreak'
+            overflow: 'linebreak',
+            fillColor: [240, 240, 240] // Color de fondo de las celdas
         },
         headStyles: {
             fillColor: [44, 62, 80], // Color de fondo de los encabezados
             textColor: 255, // Color del texto de los encabezados
             fontSize: 14
         },
-        margin: { top: 50, bottom: 20 }
+        margin: { top: 50, bottom: 40 },
+        theme: 'grid' // Estilo de la tabla (puedes probar otros temas como 'striped')
     });
 
-    doc.save('presupuesto.pdf');
+    // Pie de página con espacio para la firma y aclaración
+    const pageHeight = doc.internal.pageSize.height;
+    doc.setFontSize(12);
+    doc.setTextColor(34, 34, 34);
+    doc.text('Firma:', 14, pageHeight - 40);
+    doc.line(40, pageHeight - 40, 100, pageHeight - 40); // Línea para la firma
+
+    doc.text('Aclaración:', 14, pageHeight - 30);
+    doc.line(40, pageHeight - 30, 100, pageHeight - 30); // Línea para la aclaración
+
+    // Guardar el PDF con el nombre del proyecto
+    doc.save(`presupuesto_${presupuesto.nombre}.pdf`);
 };
 
 export default GenerarPDF;
