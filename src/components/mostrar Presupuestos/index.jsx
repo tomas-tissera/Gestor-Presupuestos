@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../../firebase'; // Asegúrate de que la ruta sea correcta
+import { db } from '../../firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from "./mPresupuestos.module.css";
 import { useNavigate } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap'; // Importar el componente Spinner
-import Swal from 'sweetalert2'; // Importar SweetAlert2
+import { Spinner, Form, Row, Col } from 'react-bootstrap'; // Importar componentes adicionales de Bootstrap
+import Swal from 'sweetalert2'; 
 import { TbTrashX } from "react-icons/tb";
 
 function mPresupuestos() {
     const [presupuestos, setPresupuestos] = useState([]);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true); // Estado para la carga
-    const navigate = useNavigate(); // Hook para navegación
+    const [loading, setLoading] = useState(true); 
+    const [estadoFiltro, setEstadoFiltro] = useState(''); // Estado para el filtro por estado
+    const [buscarTitulo, setBuscarTitulo] = useState(''); // Estado para la búsqueda por título
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const obtenerPresupuestos = async () => {
@@ -22,13 +24,13 @@ function mPresupuestos() {
                     id: doc.id,
                     ...doc.data()
                 }));
-                console.log("Presupuestos recuperados:", listaPresupuestos); // Log para depuración
+                console.log("Presupuestos recuperados:", listaPresupuestos);
                 setPresupuestos(listaPresupuestos);
             } catch (err) {
                 console.error("Error al obtener presupuestos: ", err);
                 setError("Error al cargar los presupuestos.");
             } finally {
-                setLoading(false); // Ocultar el spinner cuando la carga termine
+                setLoading(false);
             }
         };
 
@@ -36,7 +38,7 @@ function mPresupuestos() {
     }, []);
 
     const verDetalles = (id) => {
-        navigate(`/presupuesto/${id}`); // Navegar a la ruta de detalles del presupuesto
+        navigate(`/presupuesto/${id}`); 
     };
 
     const eliminarPresupuesto = async (id) => {
@@ -54,7 +56,7 @@ function mPresupuestos() {
         if (result.isConfirmed) {
             try {
                 await deleteDoc(doc(db, "proyectos", id));
-                setPresupuestos(presupuestos.filter(presupuesto => presupuesto.id !== id)); // Remover el presupuesto del estado
+                setPresupuestos(presupuestos.filter(presupuesto => presupuesto.id !== id));
                 Swal.fire(
                     'Eliminado',
                     'El presupuesto ha sido eliminado.',
@@ -67,6 +69,13 @@ function mPresupuestos() {
         }
     };
 
+    // Filtrar presupuestos por estado y por título
+    const presupuestosFiltrados = presupuestos.filter(presupuesto => {
+        const coincideEstado = estadoFiltro ? presupuesto.estado === estadoFiltro : true;
+        const coincideTitulo = presupuesto.nombre.toLowerCase().includes(buscarTitulo.toLowerCase());
+        return coincideEstado && coincideTitulo;
+    });
+
     return (
         <div className={styles.container}>
             {loading ? (
@@ -78,17 +87,39 @@ function mPresupuestos() {
             ) : (
                 <>
                     <h4>Lista de Presupuestos</h4>
+                    <Form>
+                        <Row className="mb-3">
+                            <Col sm="6">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Buscar por título"
+                                    value={buscarTitulo}
+                                    onChange={(e) => setBuscarTitulo(e.target.value)}
+                                />
+                            </Col>
+                            <Col sm="6">
+                                <Form.Select
+                                    value={estadoFiltro}
+                                    onChange={(e) => setEstadoFiltro(e.target.value)}
+                                >
+                                    <option value="">Filtrar por estado</option>
+                                    <option value="cotizado">Cotizado</option>
+                                    <option value="en Proceso">En Proceso</option>
+                                    <option value="pagado">Pagado</option>
+                                </Form.Select>
+                            </Col>
+                        </Row>
+                    </Form>
                     {error ? (
                         <p className={styles.error}>{error}</p>
                     ) : (
                         <ul className={styles.lista}>
-                            {presupuestos.map(presupuesto => (
+                            {presupuestosFiltrados.map(presupuesto => (
                                 <li key={presupuesto.id} className={styles.item}>
                                     <div className={styles.itemText}>
-                                        <strong>{presupuesto.nombre}</strong> - Total: ${presupuesto.total}
+                                        <strong>{presupuesto.nombre}</strong> - Total: ${presupuesto.total} - Estado: {presupuesto.estado}
                                     </div>
                                     <button onClick={() => verDetalles(presupuesto.id)}>Ver detalles</button>
-                                    
                                     <button onClick={() => eliminarPresupuesto(presupuesto.id)} className={styles.deleteButton}>
                                         Eliminar
                                         <TbTrashX className={styles.deleteIcon}/>
