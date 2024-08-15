@@ -195,16 +195,18 @@ function DPresupuesto() {
                                         rows={1}
                                         placeholder="Nombre"
                                         name="nombre"
+                                        title="nombre"
                                         value={componente.nombre}
                                         onChange={(e) => handleInputChange(index, e)}
                                         />
                                 </Col>
-                                <Col sm="5">
+                                <Col sm="4">
                                     <Form.Control
                                         as="textarea"
                                         rows={1}
                                         placeholder="Descripción"
                                         name="descripcion"
+                                        title="descripcion"
                                         value={componente.descripcion}
                                         onChange={(e) => handleInputChange(index, e)}
                                         />
@@ -214,15 +216,17 @@ function DPresupuesto() {
                                         type="text"
                                         placeholder="Precio"
                                         name="precio"
+                                        title="precio"
                                         value={`$${componente.precio}`}
                                         onChange={(e) => handleInputChange(index, e)}
                                         />
                                 </Col>
-                                <Col sm="1">
+                                <Col sm="2">
                                     <Form.Control
                                         type="number"
                                         placeholder="Cantidad"
                                         name="cantidad"
+                                        title="cantidad"
                                         value={componente.cantidad}
                                         onChange={(e) => handleCantidadChange(index, e)}
                                         min={1}
