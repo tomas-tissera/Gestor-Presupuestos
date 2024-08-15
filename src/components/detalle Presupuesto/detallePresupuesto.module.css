@@ -127,7 +127,15 @@ p {
         -webkit-appearance: none;
         margin: 0;
     }
-    
+    .tituloDescripcionText{
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .tituloDescripcion{
+        text-align: center;
+    }
 @media (max-width: 768px) {
     .container {
         padding: 15px;

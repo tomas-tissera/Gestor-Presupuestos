@@ -181,9 +181,10 @@ function DPresupuesto() {
                 
                 {presupuesto ? (
                     <div>
-                        <p><strong>Nombre del Proyecto:</strong> {presupuesto.nombre}</p>
-                        <p><strong>Descripción:</strong> {presupuesto.descripcion}</p>
-                        <p><strong>Total:</strong> ${presupuesto.total}</p>
+                        <div className={styles.tituloDescripcion}>
+                            <p className={styles.tituloDescripcionText}><strong>Nombre del Proyecto:</strong> <p className={styles.tituloDescripcion}>{presupuesto.nombre}</p></p>
+                            <p className={styles.tituloDescripcionText}><strong>Descripción:</strong>  <p className={styles.tituloDescripcion}>{presupuesto.descripcion}</p></p>
+                        </div>
 
                         <h5>Componentes:</h5>
                         {presupuesto.componentes.map((componente, index) => (
@@ -196,7 +197,7 @@ function DPresupuesto() {
                                         name="nombre"
                                         value={componente.nombre}
                                         onChange={(e) => handleInputChange(index, e)}
-                                    />
+                                        />
                                 </Col>
                                 <Col sm="5">
                                     <Form.Control
@@ -206,7 +207,7 @@ function DPresupuesto() {
                                         name="descripcion"
                                         value={componente.descripcion}
                                         onChange={(e) => handleInputChange(index, e)}
-                                    />
+                                        />
                                 </Col>
                                 <Col sm="2">
                                     <Form.Control
@@ -215,7 +216,7 @@ function DPresupuesto() {
                                         name="precio"
                                         value={`$${componente.precio}`}
                                         onChange={(e) => handleInputChange(index, e)}
-                                    />
+                                        />
                                 </Col>
                                 <Col sm="1">
                                     <Form.Control
@@ -227,17 +228,18 @@ function DPresupuesto() {
                                         min={1}
                                         max={10}
                                         className={styles.customNumberInput} // Usa el nombre correcto de la clase CSS
-                                    />
+                                        />
                                 </Col>
                                 <Col sm="1">
                                     <FaDeleteLeft
                                         className={styles.deletIcon}
                                         onClick={() => eliminarComponente(index)}
-                                    />
+                                        />
                                 </Col>
                             </Form.Group>
                         ))}
 
+                        <p><strong>Total:</strong> ${presupuesto.total}</p>
                         <h5>Añadir Componente</h5>
                         <Form.Group as={Row} className="mb-3">
                             <Col sm="3">
@@ -248,7 +250,7 @@ function DPresupuesto() {
                                     name="nombre"
                                     value={nuevoComponente.nombre}
                                     onChange={(e) => setNuevoComponente({ ...nuevoComponente, nombre: e.target.value })}
-                                />
+                                    />
                             </Col>
                             <Col sm="5">
                                 <Form.Control
