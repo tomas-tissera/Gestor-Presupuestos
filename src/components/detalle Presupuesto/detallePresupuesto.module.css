@@ -136,6 +136,9 @@ p {
     .tituloDescripcion{
         text-align: center;
     }
+    .btnAdd{
+        padding: 15px;
+    }
 @media (max-width: 768px) {
     .container {
         padding: 15px;

@@ -15,6 +15,7 @@ import styles from './cPresupuesto.module.css';
 const CrearPresupuesto = () => {
     const [nombreProyecto, setNombreProyecto] = useState('');
     const [descripcionProyecto, setDescripcionProyecto] = useState('');
+    const [estadoPresupuesto, setEstadoPresupuesto] = useState('cotizado'); // Estado inicial
     const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -130,6 +131,8 @@ const CrearPresupuesto = () => {
             descripcion: descripcionProyecto,
             componentes: componentes,
             total: calcularTotalGeneral(),
+            estado: estadoPresupuesto, // Incluir el estado del presupuesto
+
         };
 
         try {

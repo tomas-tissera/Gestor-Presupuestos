@@ -22,6 +22,7 @@ function DPresupuesto() {
     const [isLoading, setIsLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [showSaveNotice, setShowSaveNotice] = useState(false);
+    const [estadoPresupuesto, setEstadoPresupuesto] = useState(''); // Inicializa con el estado del presupuesto
 
     useEffect(() => {
         const obtenerPresupuesto = async () => {
@@ -29,7 +30,11 @@ function DPresupuesto() {
             try {
                 const docRef = doc(db, "proyectos", id);
                 const docSnap = await getDoc(docRef);
-
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setPresupuesto(data);
+                    setEstadoPresupuesto(data.estado || 'cotizado'); // Cargar el estado del presupuesto
+                }
                 if (docSnap.exists()) {
                     setPresupuesto(docSnap.data());
                 } else {
@@ -45,7 +50,11 @@ function DPresupuesto() {
 
         obtenerPresupuesto();
     }, [id]);
-
+    const handleEstadoChange = (e) => {
+        setEstadoPresupuesto(e.target.value);
+        setShowSaveNotice(true); // Mostrar notificación para guardar cambios
+    };
+    
     const handleInputChange = (index, e) => {
         const { name, value } = e.target;
         const updatedComponentes = [...presupuesto.componentes];
@@ -143,7 +152,9 @@ function DPresupuesto() {
 
             await updateDoc(doc(db, "proyectos", id), {
                 componentes: presupuesto.componentes,
-                total: updatedTotal
+                total: updatedTotal,
+                estado: estadoPresupuesto // Guardar el estado del presupuesto
+
             });
 
             setPresupuesto({
@@ -185,7 +196,19 @@ function DPresupuesto() {
                             <p className={styles.tituloDescripcionText}><strong>Nombre del Proyecto:</strong> <p className={styles.tituloDescripcion}>{presupuesto.nombre}</p></p>
                             <p className={styles.tituloDescripcionText}><strong>Descripción:</strong>  <p className={styles.tituloDescripcion}>{presupuesto.descripcion}</p></p>
                         </div>
-
+                        <Form.Group as={Row} className="mb-3">
+                            <Form.Label column sm="4"><strong className={styles.tituloDescripcionText}>Estado del Presupuesto:</strong></Form.Label>
+                            <Col sm="6">
+                                <Form.Select
+                                    value={estadoPresupuesto}
+                                    onChange={handleEstadoChange}
+                                    title="estado">
+                                    <option value="cotizado">Cotizado</option>
+                                    <option value="en Proceso">En Proceso</option>
+                                    <option value="pagado">Pagado</option>
+                                </Form.Select>
+                            </Col>
+                        </Form.Group>
                         <h5>Componentes:</h5>
                         {presupuesto.componentes.map((componente, index) => (
                             <Form.Group as={Row} className="mb-3" key={index}>
@@ -277,7 +300,7 @@ function DPresupuesto() {
                                     onChange={(e) => setNuevoComponente({ ...nuevoComponente, precio: e.target.value.replace('$', '') })}
                                 />
                             </Col>
-                            <Col sm="1">
+                            <Col sm="2">
                                 <Form.Control
                                     type="number"
                                     placeholder="Cantidad"
@@ -289,9 +312,11 @@ function DPresupuesto() {
                                     max={10}
                                 />
                             </Col>
-                            <Col sm="1">
-                                <Button variant="primary" onClick={agregarComponente} title="Añadir">Añadir</Button>
-                            </Col>
+                            <Form.Group>
+                                <Col sm="15" className={styles.btnAdd}>
+                                    <Button variant="primary" onClick={agregarComponente} title="Añadir">Añadir</Button>
+                                </Col>
+                            </Form.Group>
                         </Form.Group>
                         <div className={styles.botones}>
                             {showSaveNotice && (
