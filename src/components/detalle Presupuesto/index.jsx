@@ -236,6 +236,7 @@ function DPresupuesto() {
                                 </Col>
                                 <Col sm="1">
                                     <FaDeleteLeft
+                                        title="Eliminar"
                                         className={styles.deletIcon}
                                         onClick={() => eliminarComponente(index)}
                                         />
@@ -271,6 +272,7 @@ function DPresupuesto() {
                                     type="text"
                                     placeholder="Precio"
                                     name="precio"
+                                        title="precio"
                                     value={nuevoComponente.precio ? `$${nuevoComponente.precio}` : ''}
                                     onChange={(e) => setNuevoComponente({ ...nuevoComponente, precio: e.target.value.replace('$', '') })}
                                 />
@@ -280,6 +282,7 @@ function DPresupuesto() {
                                     type="number"
                                     placeholder="Cantidad"
                                     name="cantidad"
+                                        title="cantidad"
                                     value={nuevoComponente.cantidad}
                                     onChange={(e) => setNuevoComponente({ ...nuevoComponente, cantidad: parseInt(e.target.value, 10) })}
                                     min={1}
@@ -287,14 +290,14 @@ function DPresupuesto() {
                                 />
                             </Col>
                             <Col sm="1">
-                                <Button variant="primary" onClick={agregarComponente}>Añadir</Button>
+                                <Button variant="primary" onClick={agregarComponente} title="Añadir">Añadir</Button>
                             </Col>
                         </Form.Group>
                         <div className={styles.botones}>
                             {showSaveNotice && (
-                                <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar}>Guardar Cambios</Button>
+                                <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar} title="Guardar Cambios">Guardar Cambios</Button>
                             )}
-                            <Button variant="secondary" onClick={handleGenerarPDF} className={styles.botonGenerar}>Generar PDF</Button>
+                            <Button variant="secondary" onClick={handleGenerarPDF} className={styles.botonGenerar} title="Generar PDF">Generar PDF</Button>
                         </div>
                     </div>
                 ) : (
