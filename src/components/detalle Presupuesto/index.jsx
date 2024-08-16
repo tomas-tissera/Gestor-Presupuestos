@@ -8,6 +8,7 @@ import Navbar from "../navbar/index";
 import { Form, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de generación de PDF
+import Swal from 'sweetalert2'; 
 
 function DPresupuesto() {
     const { id } = useParams();
@@ -113,6 +114,7 @@ function DPresupuesto() {
 
             setNuevoComponente({ nombre: '', descripcion: '', precio: '', cantidad: 1 });
             setAlertMessage('Componente agregado correctamente.');
+            //setShowSaveNotice(true); // Mostrar notificación para guardar cambios ---> Mostrarlo?
         } catch (err) {
             console.error("Error al agregar el componente: ", err);
             setError("Error al agregar el componente.");
@@ -145,32 +147,49 @@ function DPresupuesto() {
         }
     };
 
+
     const guardarCambios = async () => {
-        try {
-            setIsLoading(true);
-            const updatedTotal = calcularTotal(presupuesto.componentes);
-
-            await updateDoc(doc(db, "proyectos", id), {
-                componentes: presupuesto.componentes,
-                total: updatedTotal,
-                estado: estadoPresupuesto // Guardar el estado del presupuesto
-
-            });
-
-            setPresupuesto({
-                ...presupuesto,
-                total: updatedTotal
-            });
-            setAlertMessage('Cambios guardados correctamente.');
-            setShowSaveNotice(false); // Ocultar notificación de guardar cambios
-        } catch (err) {
-            console.error("Error al guardar los cambios: ", err);
-            setError("Error al guardar los cambios.");
-        } finally {
-            setIsLoading(false);
+        const result = await Swal.fire({
+            title: '¿Está seguro?',
+            text: "Una vez guardados los cambios, no podrás volver atrás.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Guardar',
+            cancelButtonText: 'Cancelar'
+        });
+    
+        if (result.isConfirmed) {
+            try {
+                setIsLoading(true);
+                const updatedTotal = calcularTotal(presupuesto.componentes);
+    
+                await updateDoc(doc(db, "proyectos", id), {
+                    componentes: presupuesto.componentes,
+                    total: updatedTotal,
+                    estado: estadoPresupuesto // Guardar el estado del presupuesto
+                });
+    
+                setPresupuesto({
+                    ...presupuesto,
+                    total: updatedTotal
+                });
+                Swal.fire(
+                    'Guardado',
+                    'El presupuesto ha sido actualizado.',
+                    'success'
+                );
+                setShowSaveNotice(false); // Ocultar notificación de guardar cambios
+            } catch (err) {
+                console.error("Error al guardar los cambios: ", err);
+                setError("Error al guardar los cambios.");
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
-
+    
     const handleGenerarPDF = () => {
         if (presupuesto) {
             GenerarPDF(presupuesto);
