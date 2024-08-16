@@ -114,6 +114,8 @@ p {
     }
     .botonGenerar{
         margin: 5px;
+        background-color: #3498db;
+        border: none;
     }
     .custom-number-input {
         width: 80px; /* Ajusta el ancho según sea necesario */

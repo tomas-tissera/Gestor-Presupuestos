@@ -8,6 +8,7 @@ import Navbar from "../navbar/index";
 import { Form, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de generación de PDF
+import GenerarWord from "../Generar Word/index"
 import Swal from 'sweetalert2'; 
 
 function DPresupuesto() {
@@ -195,7 +196,11 @@ function DPresupuesto() {
             GenerarPDF(presupuesto);
         }
     };
-
+    const handleGenerarWord = () => {
+        if (presupuesto) {
+            GenerarWord(presupuesto);
+        }
+    };
     if (error) {
         return <p className={styles.error}>{error}</p>;
     }
@@ -333,7 +338,7 @@ function DPresupuesto() {
                             </Col>
                             <Form.Group>
                                 <Col sm="15" className={styles.btnAdd}>
-                                    <Button variant="primary" onClick={agregarComponente} title="Añadir">Añadir</Button>
+                                    <Button variant="success" onClick={agregarComponente} title="Añadir" className={styles.botonGenerar}>Añadir</Button>
                                 </Col>
                             </Form.Group>
                         </Form.Group>
@@ -341,7 +346,8 @@ function DPresupuesto() {
                             {showSaveNotice && (
                                 <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar} title="Guardar Cambios">Guardar Cambios</Button>
                             )}
-                            <Button variant="secondary" onClick={handleGenerarPDF} className={styles.botonGenerar} title="Generar PDF">Generar PDF</Button>
+                            <Button variant="primary" onClick={handleGenerarPDF} className={styles.botonGenerar} title="Generar PDF">Generar PDF</Button>
+                            <Button variant="primary" onClick={handleGenerarWord} className={styles.botonGenerar} title="Generar PDF">Generar Word</Button>
                         </div>
                     </div>
                 ) : (
