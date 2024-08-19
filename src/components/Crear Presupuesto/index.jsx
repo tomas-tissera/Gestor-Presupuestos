@@ -16,12 +16,12 @@ const CrearPresupuesto = () => {
     const [nombreProyecto, setNombreProyecto] = useState('');
     const [descripcionProyecto, setDescripcionProyecto] = useState('');
     const [estadoPresupuesto, setEstadoPresupuesto] = useState('cotizado'); // Estado inicial
-    const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: 0, cantidad: 1, subcomponentes: [] }]);
+    const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: 0, cantidad: 0, subcomponentes: [] }]);
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
     const agregarComponente = () => {
-        setComponentes([...componentes, { nombre: '', descripcion: '', precio: 0, cantidad: 1, subcomponentes: [] }]);
+        setComponentes([...componentes, { nombre: '', descripcion: '', precio: 0, cantidad: 0, subcomponentes: [] }]);
     };
 
     const handleInputChange = (index, event) => {
@@ -41,15 +41,11 @@ const CrearPresupuesto = () => {
     const handleCantidadChange = (index, event) => {
         const { value } = event.target;
         const nuevosComponentes = [...componentes];
-        nuevosComponentes[index].cantidad = parseInt(value, 10) || 1;
+        nuevosComponentes[index].cantidad = parseInt(value, 10) || 0;
         setComponentes(nuevosComponentes);
     };
 
-    const agregarSubcomponente = (indexComponente) => {
-        const nuevosComponentes = [...componentes];
-        nuevosComponentes[indexComponente].subcomponentes.push({ nombre: '', precio: 0, cantidad: 1 });
-        setComponentes(nuevosComponentes);
-    };
+  
 
     const handleSubcomponenteChange = (indexComponente, indexSubcomponente, event) => {
         const { name, value } = event.target;
@@ -68,14 +64,14 @@ const CrearPresupuesto = () => {
     const handleCantidadSubcomponenteChange = (indexComponente, indexSubcomponente, event) => {
         const { value } = event.target;
         const nuevosComponentes = [...componentes];
-        nuevosComponentes[indexComponente].subcomponentes[indexSubcomponente].cantidad = parseInt(value, 10) || 1;
+        nuevosComponentes[indexComponente].subcomponentes[indexSubcomponente].cantidad = parseInt(value, 10) || 0;
         setComponentes(nuevosComponentes);
     };
 
     const calcularPrecioComponente = (componente) => {
         return componente.subcomponentes.reduce((total, subcomponente) => {
             const precio = subcomponente.precio || 0;
-            return total + precio * (subcomponente.cantidad || 1);
+            return total + precio * (subcomponente.cantidad || 0);
         }, 0);
     };
 
@@ -84,7 +80,7 @@ const CrearPresupuesto = () => {
             const precioComponente = componente.subcomponentes.length > 0
                 ? calcularPrecioComponente(componente)
                 : componente.precio || 0;
-            const totalComponente = precioComponente * (componente.cantidad || 1);
+            const totalComponente = precioComponente * (componente.cantidad || 0);
             return total + totalComponente;
         }, 0);
     };
@@ -136,7 +132,7 @@ const CrearPresupuesto = () => {
 
             setNombreProyecto('');
             setDescripcionProyecto('');
-            setComponentes([{ nombre: '', descripcion: '', precio: 0, cantidad: 1, subcomponentes: [] }]);
+            setComponentes([{ nombre: '', descripcion: '', precio: 0, cantidad: 0, subcomponentes: [] }]);
 
             setTimeout(() => setShowAlert(false), 3000);
         } catch (e) {
@@ -209,15 +205,15 @@ const CrearPresupuesto = () => {
                                     />
                                 </Col>
                                 <Col sm="2">
-                                     < Form.Control
-                                            type="number"
+                                    < Form.Control
+                                        type="number"
                                         placeholder="Precio"
                                         name="precio"
                                         value={componente.subcomponentes.length > 0 ? calcularPrecioComponente(componente) : componente.precio}
                                         onChange={(e) => handleInputChange(index, e)}
                                         readOnly={componente.subcomponentes.length > 0} // Hacer solo lectura si tiene subcomponentes
                                     />
-                                </Col>
+                                </Col> 
                                 <Col sm="1">
                                     <Form.Control
                                         type="number"
@@ -225,8 +221,8 @@ const CrearPresupuesto = () => {
                                         name="cantidad"
                                         value={componente.cantidad}
                                         onChange={(e) => handleCantidadChange(index, e)}
-                                        min={1}
-                                        max={10}
+                                        min={-10}
+                                        max={100}
                                     />
                                 </Col>
                                 <Col sm="1">
@@ -236,49 +232,7 @@ const CrearPresupuesto = () => {
                                     />
                                 </Col>
                             </Form.Group>
-                            {componente.subcomponentes.length > 0 && (
-                                <div className={styles.subcomponentesContainer}>
-                                    {componente.subcomponentes.map((subcomponente, subIndex) => (
-                                        <div key={subIndex} className={styles.subcomponente}>
-                                            <Form.Group as={Row} className="mb-3">
-                                                <Form.Label column sm="2" className={styles.subcomponenteLabel}>
-                                                    Subcomponente
-                                                </Form.Label>
-                                                <Col sm="7">
-                                                    <Form.Control
-                                                        as="textarea"
-                                                        rows={1}
-                                                        placeholder="Nombre"
-                                                        name="nombre"
-                                                        value={subcomponente.nombre}
-                                                        onChange={(e) => handleSubcomponenteChange(index, subIndex, e)}
-                                                    />
-                                                </Col>
-                                                <Col sm="2">
-                                                    <Form.Control
-                                                        type="number"
-                                                        placeholder="Precio"
-                                                        name="precio"
-                                                        value={subcomponente.precio}
-                                                        onChange={(e) => handleSubcomponenteChange(index, subIndex, e)}
-                                                    />
-                                                </Col>
-                                                <Col sm="1">
-                                                    <RiDeleteBin5Fill
-                                                        className={styles.deletIcon}
-                                                        onClick={() => eliminarSubcomponente(index, subIndex)}
-                                                    />
-                                                </Col>
-                                            </Form.Group>
-                                        </div>
-                                    ))}
-                                    <div className={styles.iconContainer}>
-                                        <a onClick={() => agregarSubcomponente(index)} className={styles.iconLink}>
-                                            <MdOutlineExpandMore className={styles.icono} />
-                                        </a>
-                                    </div>
-                                </div>
-                            )}
+                           
                         </div>
                     ))}
                     <div className={styles.iconContainer}>

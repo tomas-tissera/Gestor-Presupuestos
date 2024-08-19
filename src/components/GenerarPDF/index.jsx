@@ -36,9 +36,9 @@ const GenerarPDF = (presupuesto) => {
         return [
             comp.nombre,
             comp.descripcion,
-            `$${precio.toFixed(2)}`,
+            `$${precio}`,
             cantidad,
-            `$${totalPorComponente.toFixed(2)}`
+            `$${totalPorComponente}`
         ];
     });
 

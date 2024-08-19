@@ -24,7 +24,7 @@ function DPresupuesto() {
     const [isLoading, setIsLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [showSaveNotice, setShowSaveNotice] = useState(false);
-    const [estadoPresupuesto, setEstadoPresupuesto] = useState(''); // Inicializa con el estado del presupuesto
+    const [estadoPresupuesto, setEstadoPresupuesto] = useState('');
 
     useEffect(() => {
         const obtenerPresupuesto = async () => {
@@ -35,10 +35,7 @@ function DPresupuesto() {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     setPresupuesto(data);
-                    setEstadoPresupuesto(data.estado || 'cotizado'); // Cargar el estado del presupuesto
-                }
-                if (docSnap.exists()) {
-                    setPresupuesto(docSnap.data());
+                    setEstadoPresupuesto(data.estado || 'cotizado');
                 } else {
                     setError("Presupuesto no encontrado.");
                 }
@@ -52,23 +49,24 @@ function DPresupuesto() {
 
         obtenerPresupuesto();
     }, [id]);
+
     const handleEstadoChange = (e) => {
         setEstadoPresupuesto(e.target.value);
-        setShowSaveNotice(true); // Mostrar notificación para guardar cambios
+        setShowSaveNotice(true);
     };
-    
+
     const handleInputChange = (index, e) => {
         const { name, value } = e.target;
         const updatedComponentes = [...presupuesto.componentes];
         updatedComponentes[index] = {
             ...updatedComponentes[index],
-            [name]: name === 'precio' ? parseFloat(value.replace('$', '')) || 0 : value
+            [name]: name === 'precio' ? parseInt(value.replace('$', ''), 10) || 0 : value
         };
         setPresupuesto({
             ...presupuesto,
             componentes: updatedComponentes
         });
-        setShowSaveNotice(true); // Mostrar notificación para guardar cambios
+        setShowSaveNotice(true);
     };
 
     const handleCantidadChange = (index, e) => {
@@ -79,26 +77,26 @@ function DPresupuesto() {
             ...presupuesto,
             componentes: updatedComponentes
         });
-        setShowSaveNotice(true); // Mostrar notificación para guardar cambios
+        setShowSaveNotice(true);
     };
 
     const calcularTotal = (componentes) => {
         return componentes.reduce((total, comp) => {
-            const precio = parseFloat(comp.precio) || 0;
+            const precio = parseInt(comp.precio, 10) || 0;
             const cantidad = parseInt(comp.cantidad, 10) || 1;
             return total + (precio * cantidad);
         }, 0);
     };
 
     const agregarComponente = async () => {
-        const precioNumerico = parseFloat(nuevoComponente.precio.replace('$', '')) || 0;
+        const precioNumerico = parseInt(nuevoComponente.precio.replace('$', ''), 10) || 0;
         const nuevoComponenteConPrecio = {
             ...nuevoComponente,
             precio: precioNumerico
         };
 
         try {
-            setIsLoading(true); // Mostrar el círculo de carga
+            setIsLoading(true);
             const updatedComponentes = [...presupuesto.componentes, nuevoComponenteConPrecio];
             const updatedTotal = calcularTotal(updatedComponentes);
 
@@ -115,7 +113,6 @@ function DPresupuesto() {
 
             setNuevoComponente({ nombre: '', descripcion: '', precio: '', cantidad: 1 });
             setAlertMessage('Componente agregado correctamente.');
-            //setShowSaveNotice(true); // Mostrar notificación para guardar cambios ---> Mostrarlo?
         } catch (err) {
             console.error("Error al agregar el componente: ", err);
             setError("Error al agregar el componente.");
@@ -148,7 +145,6 @@ function DPresupuesto() {
         }
     };
 
-
     const guardarCambios = async () => {
         const result = await Swal.fire({
             title: '¿Está seguro?',
@@ -160,18 +156,18 @@ function DPresupuesto() {
             confirmButtonText: 'Guardar',
             cancelButtonText: 'Cancelar'
         });
-    
+
         if (result.isConfirmed) {
             try {
                 setIsLoading(true);
                 const updatedTotal = calcularTotal(presupuesto.componentes);
-    
+
                 await updateDoc(doc(db, "proyectos", id), {
                     componentes: presupuesto.componentes,
                     total: updatedTotal,
-                    estado: estadoPresupuesto // Guardar el estado del presupuesto
+                    estado: estadoPresupuesto
                 });
-    
+
                 setPresupuesto({
                     ...presupuesto,
                     total: updatedTotal
@@ -181,7 +177,7 @@ function DPresupuesto() {
                     'El presupuesto ha sido actualizado.',
                     'success'
                 );
-                setShowSaveNotice(false); // Ocultar notificación de guardar cambios
+                setShowSaveNotice(false);
             } catch (err) {
                 console.error("Error al guardar los cambios: ", err);
                 setError("Error al guardar los cambios.");
@@ -190,17 +186,19 @@ function DPresupuesto() {
             }
         }
     };
-    
+
     const handleGenerarPDF = () => {
         if (presupuesto) {
             GenerarPDF(presupuesto);
         }
     };
+
     const handleGenerarWord = () => {
         if (presupuesto) {
             GenerarWord(presupuesto);
         }
     };
+
     if (error) {
         return <p className={styles.error}>{error}</p>;
     }
@@ -210,15 +208,15 @@ function DPresupuesto() {
             <Navbar />
             <div className={styles.container}>
                 <h4>Detalles del Presupuesto</h4>
-                {isLoading && <Spinner animation="border" variant="primary" />} {/* Círculo de carga */}
-                {alertMessage && <Alert variant="success">{alertMessage}</Alert>} {/* Alerta de operación exitosa */}
-                {showSaveNotice && <Alert variant="warning">Se han modificado componentes, no olvide guardar los cambios.</Alert>} {/* Notificación de guardar cambios */}
+                {isLoading && <Spinner animation="border" variant="primary" />}
+                {alertMessage && <Alert variant="success">{alertMessage}</Alert>}
+                {showSaveNotice && <Alert variant="warning">Se han modificado componentes, no olvide guardar los cambios.</Alert>}
                 
                 {presupuesto ? (
                     <div>
                         <div className={styles.tituloDescripcion}>
-                            <p className={styles.tituloDescripcionText}><strong>Nombre del Proyecto:</strong> <p className={styles.tituloDescripcion}>{presupuesto.nombre}</p></p>
-                            <p className={styles.tituloDescripcionText}><strong>Descripción:</strong>  <p className={styles.tituloDescripcion}>{presupuesto.descripcion}</p></p>
+                            <p className={styles.tituloDescripcionText}><strong>Nombre del Proyecto:</strong> <span className={styles.tituloDescripcion}>{presupuesto.nombre}</span></p>
+                            <p className={styles.tituloDescripcionText}><strong>Descripción:</strong>  <span className={styles.tituloDescripcion}>{presupuesto.descripcion}</span></p>
                         </div>
                         <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="4"><strong className={styles.tituloDescripcionText}>Estado del Presupuesto:</strong></Form.Label>
@@ -242,10 +240,9 @@ function DPresupuesto() {
                                         rows={1}
                                         placeholder="Nombre"
                                         name="nombre"
-                                        title="nombre"
                                         value={componente.nombre}
                                         onChange={(e) => handleInputChange(index, e)}
-                                        />
+                                    />
                                 </Col>
                                 <Col sm="4">
                                     <Form.Control
@@ -253,40 +250,36 @@ function DPresupuesto() {
                                         rows={1}
                                         placeholder="Descripción"
                                         name="descripcion"
-                                        title="descripcion"
                                         value={componente.descripcion}
                                         onChange={(e) => handleInputChange(index, e)}
-                                        />
+                                    />
                                 </Col>
                                 <Col sm="2">
                                     <Form.Control
                                         type="text"
                                         placeholder="Precio"
                                         name="precio"
-                                        title="precio"
                                         value={`$${componente.precio}`}
                                         onChange={(e) => handleInputChange(index, e)}
-                                        />
+                                    />
                                 </Col>
                                 <Col sm="2">
                                     <Form.Control
                                         type="number"
                                         placeholder="Cantidad"
                                         name="cantidad"
-                                        title="cantidad"
                                         value={componente.cantidad}
                                         onChange={(e) => handleCantidadChange(index, e)}
                                         min={1}
                                         max={10}
-                                        className={styles.customNumberInput} // Usa el nombre correcto de la clase CSS
-                                        />
+                                    />
                                 </Col>
                                 <Col sm="1">
                                     <FaDeleteLeft
                                         title="Eliminar"
                                         className={styles.deletIcon}
                                         onClick={() => eliminarComponente(index)}
-                                        />
+                                    />
                                 </Col>
                             </Form.Group>
                         ))}
@@ -302,7 +295,7 @@ function DPresupuesto() {
                                     name="nombre"
                                     value={nuevoComponente.nombre}
                                     onChange={(e) => setNuevoComponente({ ...nuevoComponente, nombre: e.target.value })}
-                                    />
+                                />
                             </Col>
                             <Col sm="5">
                                 <Form.Control
@@ -319,7 +312,6 @@ function DPresupuesto() {
                                     type="text"
                                     placeholder="Precio"
                                     name="precio"
-                                        title="precio"
                                     value={nuevoComponente.precio ? `$${nuevoComponente.precio}` : ''}
                                     onChange={(e) => setNuevoComponente({ ...nuevoComponente, precio: e.target.value.replace('$', '') })}
                                 />
@@ -329,9 +321,8 @@ function DPresupuesto() {
                                     type="number"
                                     placeholder="Cantidad"
                                     name="cantidad"
-                                        title="cantidad"
                                     value={nuevoComponente.cantidad}
-                                    onChange={(e) => setNuevoComponente({ ...nuevoComponente, cantidad: parseInt(e.target.value, 10) })}
+                                    onChange={(e) => setNuevoComponente({ ...nuevoComponente, cantidad: parseInt(e.target.value, 10) || 1 })}
                                     min={1}
                                     max={10}
                                 />
@@ -347,7 +338,7 @@ function DPresupuesto() {
                                 <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar} title="Guardar Cambios">Guardar Cambios</Button>
                             )}
                             <Button variant="primary" onClick={handleGenerarPDF} className={styles.botonGenerar} title="Generar PDF">Generar PDF</Button>
-                            <Button variant="primary" onClick={handleGenerarWord} className={styles.botonGenerar} title="Generar PDF">Generar Word</Button>
+                            <Button variant="primary" onClick={handleGenerarWord} className={styles.botonGenerar} title="Generar Word">Generar Word</Button>
                         </div>
                     </div>
                 ) : (
