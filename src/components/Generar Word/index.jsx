@@ -1,7 +1,18 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 
+// Función para formatear la fecha en formato dd/MM/yyyy
+const getFormattedDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses en JavaScript empiezan en 0
+    const year = today.getFullYear();
+    return `${day}/${month}/${year}`;
+};
 const GenerarWord = (presupuesto) => {
+    // Obtén la fecha actual formateada
+    const fecha = getFormattedDate();
+
     // Crea el documento
     const document = new Document({
         sections: [
@@ -24,9 +35,20 @@ const GenerarWord = (presupuesto) => {
                         spacing: { after: 100 },
                     }),
                     new Paragraph({
-                        text: `Estado: ${presupuesto.estado || 'N/A'}`,
+                        text: `Fecha: ${fecha}`,
                         spacing: { after: 200 },
                     }),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: `Total: $${presupuesto.total}`,
+                                bold: true, // Título en negritas
+                                size: 24, // Tamaño de fuente grande para el título
+                            })
+                        ],
+                        heading: HeadingLevel.HEADING_3,
+                        alignment: AlignmentType.RIGHT,
+                        spacing: { after: 200 },}),
                     new Paragraph({
                         text: 'Componentes:',
                         heading: HeadingLevel.HEADING_2,
@@ -102,11 +124,29 @@ const GenerarWord = (presupuesto) => {
                             insideVertical: { style: BorderStyle.SINGLE, size: 1, space: 0 },
                         },
                     }),
+                    
                     new Paragraph({
-                        text: `Total: $${presupuesto.total.toFixed(2)}`,
-                        bold: true, // Aplica negritas al total
-                        alignment: AlignmentType.RIGHT,
-                        spacing: { before: 300 },
+                        text: 'Notas:',
+                        heading: HeadingLevel.HEADING_3,
+                        spacing: { before: 200, after: 100 },
+                    }),
+                    new Paragraph({
+                        text: 'Este presupuesto es válido por 15 días a partir de la fecha de emisión. Los términos y condiciones están sujetos a cambios.',
+                        spacing: { after: 200 },
+                    }),new Paragraph({
+                        text: '',
+                        spacing: { before: 200, after: 200 }, // Ajusta los valores según sea necesario
+                    }),new Paragraph({
+                        text: '',
+                        spacing: { before: 200, after: 200 }, // Ajusta los valores según sea necesario
+                    }),
+                    new Paragraph({
+                        text: 'Firma: ___________________________',
+                        spacing: { after: 100 },
+                    }),
+                    new Paragraph({
+                        text: 'Aclaración: ___________________________',
+                        spacing: { after: 100 },
                     }),
                 ],
             },
