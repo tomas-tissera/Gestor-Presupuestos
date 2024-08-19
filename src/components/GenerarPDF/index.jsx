@@ -25,11 +25,15 @@ const GenerarPDF = (presupuesto) => {
     const descripcionLarga = doc.splitTextToSize(`Descripción: ${presupuesto.descripcion}`, 180); // Ajusta el ancho máximo
     doc.text(descripcionLarga, 14, 60);
 
+    
+    doc.textWithLink('Adelanto de Web.(click me)', 14, 90 + descripcionLarga.length , {url: 'https://isaac-newton.netlify.app/'});
+    
+
     // Mostrar el total de forma destacada
     doc.setFontSize(16);
     doc.setFont('Helvetica', 'bold');
-    doc.text(`Total: $${presupuesto.total.toFixed(2)}`, 14, 70 + descripcionLarga.length * 10);
-
+    doc.text(`Total: $${presupuesto.total}`, 150, 100 + descripcionLarga.length);
+    
     // Tabla de componentes
     const componentesData = presupuesto.componentes.map(comp => {
         // Asegurarse de que precio y cantidad sean números
@@ -81,7 +85,7 @@ const GenerarPDF = (presupuesto) => {
     // Añadir una nota legal o condiciones al final del documento
     // Ajustar automáticamente la descripción si es muy larga
     doc.text('Notas:', 14, pageHeight - 20);
-    const notaLarga = doc.splitTextToSize("Este presupuesto es válido por 15 días a partir de la fecha de emisión. Los términos y condiciones están sujetos a cambios.'", 180); // Ajusta el ancho máximo
+    const notaLarga = doc.splitTextToSize("Este presupuesto es válido por 15 días a partir de la fecha de emisión. Los términos y condiciones están sujetos a cambios.", 180); // Ajusta el ancho máximo
     doc.text(notaLarga,14, pageHeight - 10);
 
     // Guardar el PDF con el nombre del proyecto
