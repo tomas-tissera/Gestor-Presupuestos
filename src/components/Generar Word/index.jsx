@@ -84,7 +84,7 @@ const GenerarWord = (presupuesto) => {
                                             children: [new Paragraph(comp.descripcion)],
                                         }),
                                         new TableCell({
-                                            children: [new Paragraph(`$${comp.precio.toFixed(2)}`)],
+                                            children: [new Paragraph(`$${(Number(comp.precio) || 0).toFixed(2)}`)],
                                         }),
                                         new TableCell({
                                             children: [new Paragraph(comp.cantidad.toString())],

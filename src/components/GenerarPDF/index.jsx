@@ -4,7 +4,6 @@ import 'jspdf-autotable';
 const GenerarPDF = (presupuesto) => {
     const doc = new jsPDF();
 
-
     // Añadir el logo
     const imgData = '/icon.png'; // Ruta a tu imagen de logo
     doc.addImage(imgData, 'PNG', 14, 10, 30, 20); // Posición y tamaño del logo
@@ -20,20 +19,31 @@ const GenerarPDF = (presupuesto) => {
     doc.setFont('Helvetica', 'normal');
     doc.setTextColor(54, 54, 54); // Color de texto secundario
     doc.text(`Nombre del Proyecto: ${presupuesto.nombre}`, 14, 50);
-    doc.text(`Descripción: ${presupuesto.descripcion}`, 14, 60);
-    doc.text(`Total: $${presupuesto.total}`, 14, 70);
+
+    // Ajustar automáticamente la descripción si es muy larga
+    const descripcionLarga = doc.splitTextToSize(`Descripción: ${presupuesto.descripcion}`, 180); // Ajusta el ancho máximo
+    doc.text(descripcionLarga, 14, 60);
+
+    doc.text(`Total: $${presupuesto.total.toFixed(2)}`, 14, 70 + descripcionLarga.length * 10);
 
     // Tabla de componentes
-    const componentesData = presupuesto.componentes.map(comp => [
-        comp.nombre,
-        comp.descripcion,
-        `$${comp.precio.toFixed(2)}`,
-        comp.cantidad,
-        `$${(comp.precio * comp.cantidad).toFixed(2)}`
-    ]);
+    const componentesData = presupuesto.componentes.map(comp => {
+        // Asegurarse de que precio y cantidad sean números
+        const precio = Number(comp.precio) || 0;
+        const cantidad = Number(comp.cantidad) || 0;
+        const totalPorComponente = precio * cantidad; // Calcula el total por componente
+
+        return [
+            comp.nombre,
+            comp.descripcion,
+            `$${precio.toFixed(2)}`,
+            cantidad,
+            `$${totalPorComponente.toFixed(2)}`
+        ];
+    });
 
     doc.autoTable({
-        startY: 80,
+        startY: 80 + descripcionLarga.length * 10,
         head: [['Nombre', 'Descripción', 'Precio', 'Cantidad', 'Total']],
         body: componentesData,
         styles: {
@@ -42,8 +52,7 @@ const GenerarPDF = (presupuesto) => {
             cellPadding: 5,
             halign: 'center',
             valign: 'middle',
-            overflow: 'linebreak',
-            fillColor: [240, 240, 240] // Color de fondo de las celdas
+            overflow: 'linebreak', // Hace que el texto continúe en la siguiente línea si es muy largo
         },
         headStyles: {
             fillColor: [44, 62, 80], // Color de fondo de los encabezados

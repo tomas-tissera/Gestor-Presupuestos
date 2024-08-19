@@ -16,12 +16,12 @@ const CrearPresupuesto = () => {
     const [nombreProyecto, setNombreProyecto] = useState('');
     const [descripcionProyecto, setDescripcionProyecto] = useState('');
     const [estadoPresupuesto, setEstadoPresupuesto] = useState('cotizado'); // Estado inicial
-    const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
+    const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: 0, cantidad: 1, subcomponentes: [] }]);
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
     const agregarComponente = () => {
-        setComponentes([...componentes, { nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
+        setComponentes([...componentes, { nombre: '', descripcion: '', precio: 0, cantidad: 1, subcomponentes: [] }]);
     };
 
     const handleInputChange = (index, event) => {
@@ -29,8 +29,8 @@ const CrearPresupuesto = () => {
         const nuevosComponentes = [...componentes];
 
         if (name === 'precio') {
-            const formattedValue = formatCurrency(value);
-            nuevosComponentes[index][name] = formattedValue;
+            const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10) || 0;
+            nuevosComponentes[index][name] = numericValue;
         } else {
             nuevosComponentes[index][name] = value;
         }
@@ -47,7 +47,7 @@ const CrearPresupuesto = () => {
 
     const agregarSubcomponente = (indexComponente) => {
         const nuevosComponentes = [...componentes];
-        nuevosComponentes[indexComponente].subcomponentes.push({ nombre: '', precio: '', cantidad: 1 });
+        nuevosComponentes[indexComponente].subcomponentes.push({ nombre: '', precio: 0, cantidad: 1 });
         setComponentes(nuevosComponentes);
     };
 
@@ -56,8 +56,8 @@ const CrearPresupuesto = () => {
         const nuevosComponentes = [...componentes];
 
         if (name === 'precio') {
-            const formattedValue = formatCurrency(value);
-            nuevosComponentes[indexComponente].subcomponentes[indexSubcomponente][name] = formattedValue;
+            const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10) || 0;
+            nuevosComponentes[indexComponente].subcomponentes[indexSubcomponente][name] = numericValue;
         } else {
             nuevosComponentes[indexComponente].subcomponentes[indexSubcomponente][name] = value;
         }
@@ -74,24 +74,19 @@ const CrearPresupuesto = () => {
 
     const calcularPrecioComponente = (componente) => {
         return componente.subcomponentes.reduce((total, subcomponente) => {
-            const precio = parseFloat(subcomponente.precio.replace('$', '')) || 0;
+            const precio = subcomponente.precio || 0;
             return total + precio * (subcomponente.cantidad || 1);
         }, 0);
     };
 
     const calcularTotalGeneral = () => {
         return componentes.reduce((total, componente) => {
-            const precioComponente = componente.subcomponentes.length > 0 
+            const precioComponente = componente.subcomponentes.length > 0
                 ? calcularPrecioComponente(componente)
-                : parseFloat(componente.precio.replace('$', '')) || 0;
+                : componente.precio || 0;
             const totalComponente = precioComponente * (componente.cantidad || 1);
             return total + totalComponente;
         }, 0);
-    };
-
-    const formatCurrency = (value) => {
-        const number = value.replace(/[^0-9.]/g, ''); // Remover todo menos números y punto decimal
-        return `$${number}`;
     };
 
     const eliminarComponente = (index) => {
@@ -110,14 +105,14 @@ const CrearPresupuesto = () => {
 
         // Validar que todos los componentes tengan nombre, precio y cantidad
         for (const componente of componentes) {
-            if (!componente.nombre || !componente.precio || !componente.cantidad) {
+            if (!componente.nombre || componente.precio === 0 || !componente.cantidad) {
                 alert("Todos los campos del componente son obligatorios.");
                 return;
             }
 
             // Validar que todos los subcomponentes tengan nombre, precio y cantidad
             for (const subcomponente of componente.subcomponentes) {
-                if (!subcomponente.nombre || !subcomponente.precio || !subcomponente.cantidad) {
+                if (!subcomponente.nombre || subcomponente.precio === 0 || !subcomponente.cantidad) {
                     alert("Todos los campos del subcomponente son obligatorios.");
                     return;
                 }
@@ -132,7 +127,6 @@ const CrearPresupuesto = () => {
             componentes: componentes,
             total: calcularTotalGeneral(),
             estado: estadoPresupuesto, // Incluir el estado del presupuesto
-
         };
 
         try {
@@ -142,7 +136,7 @@ const CrearPresupuesto = () => {
 
             setNombreProyecto('');
             setDescripcionProyecto('');
-            setComponentes([{ nombre: '', descripcion: '', precio: '', cantidad: 1, subcomponentes: [] }]);
+            setComponentes([{ nombre: '', descripcion: '', precio: 0, cantidad: 1, subcomponentes: [] }]);
 
             setTimeout(() => setShowAlert(false), 3000);
         } catch (e) {
@@ -169,21 +163,21 @@ const CrearPresupuesto = () => {
                 <Form>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Nombre del Proyecto</Form.Label>
-                        <Form.Control 
-                            type="text" 
-                            placeholder="Nombre del Proyecto" 
-                            value={nombreProyecto} 
-                            onChange={(e) => setNombreProyecto(e.target.value)} 
+                        <Form.Control
+                            type="text"
+                            placeholder="Nombre del Proyecto"
+                            value={nombreProyecto}
+                            onChange={(e) => setNombreProyecto(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Descripcion:</Form.Label>
-                        <Form.Control 
-                            as="textarea" 
-                            rows={3} 
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
                             placeholder="Descripcion"
                             value={descripcionProyecto}
-                            onChange={(e) => setDescripcionProyecto(e.target.value)} 
+                            onChange={(e) => setDescripcionProyecto(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Label column sm="2" className={styles.textLeft}>
@@ -215,11 +209,11 @@ const CrearPresupuesto = () => {
                                     />
                                 </Col>
                                 <Col sm="2">
-                                    <Form.Control
-                                        type="text"
+                                     < Form.Control
+                                            type="number"
                                         placeholder="Precio"
                                         name="precio"
-                                        value={componente.subcomponentes.length > 0 ? `$${calcularPrecioComponente(componente)}` : componente.precio}
+                                        value={componente.subcomponentes.length > 0 ? calcularPrecioComponente(componente) : componente.precio}
                                         onChange={(e) => handleInputChange(index, e)}
                                         readOnly={componente.subcomponentes.length > 0} // Hacer solo lectura si tiene subcomponentes
                                     />
@@ -262,7 +256,7 @@ const CrearPresupuesto = () => {
                                                 </Col>
                                                 <Col sm="2">
                                                     <Form.Control
-                                                        type="text"
+                                                        type="number"
                                                         placeholder="Precio"
                                                         name="precio"
                                                         value={subcomponente.precio}
@@ -299,10 +293,10 @@ const CrearPresupuesto = () => {
                         </Col>
                     </Form.Group>
                     <div className="d-grid gap-2">
-                        <Button 
-                            variant="primary" 
-                            size="lg" 
-                            type="submit" 
+                        <Button
+                            variant="primary"
+                            size="lg"
+                            type="submit"
                             onClick={guardarPresupuesto}
                             disabled={calcularTotalGeneral() === 0}  // Deshabilitar si el total es 0
                         >
