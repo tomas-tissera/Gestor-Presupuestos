@@ -12,18 +12,22 @@ const GenerarPDF = (presupuesto) => {
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(22);
     doc.setTextColor(34, 34, 34); // Color de texto oscuro
-    doc.text('Detalles del Presupuesto', 60, 25); // Centrar texto ajustando la posición
+    doc.text('Presupuesto', 60, 25); // Centrar texto ajustando la posición
 
     // Información del proyecto
     doc.setFontSize(14);
     doc.setFont('Helvetica', 'normal');
     doc.setTextColor(54, 54, 54); // Color de texto secundario
     doc.text(`Nombre del Proyecto: ${presupuesto.nombre}`, 14, 50);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 55);
 
     // Ajustar automáticamente la descripción si es muy larga
     const descripcionLarga = doc.splitTextToSize(`Descripción: ${presupuesto.descripcion}`, 180); // Ajusta el ancho máximo
     doc.text(descripcionLarga, 14, 60);
 
+    // Mostrar el total de forma destacada
+    doc.setFontSize(16);
+    doc.setFont('Helvetica', 'bold');
     doc.text(`Total: $${presupuesto.total.toFixed(2)}`, 14, 70 + descripcionLarga.length * 10);
 
     // Tabla de componentes
@@ -36,14 +40,14 @@ const GenerarPDF = (presupuesto) => {
         return [
             comp.nombre,
             comp.descripcion,
-            `$${precio}`,
+            `$${precio.toFixed(2)}`,
             cantidad,
-            `$${totalPorComponente}`
+            `$${totalPorComponente.toFixed(2)}`
         ];
     });
 
     doc.autoTable({
-        startY: 80 + descripcionLarga.length * 10,
+        startY: 80 + descripcionLarga.length * 5,
         head: [['Nombre', 'Descripción', 'Precio', 'Cantidad', 'Total']],
         body: componentesData,
         styles: {
@@ -59,13 +63,14 @@ const GenerarPDF = (presupuesto) => {
             textColor: 255, // Color del texto de los encabezados
             fontSize: 14
         },
-        margin: { top: 50, bottom: 40 },
+        margin: { top: 80, bottom: 40 },
         theme: 'grid' // Estilo de la tabla (puedes probar otros temas como 'striped')
     });
 
     // Pie de página con espacio para la firma y aclaración
     const pageHeight = doc.internal.pageSize.height;
     doc.setFontSize(12);
+    doc.setFont('Helvetica', 'normal');
     doc.setTextColor(34, 34, 34);
     doc.text('Firma:', 14, pageHeight - 40);
     doc.line(40, pageHeight - 40, 100, pageHeight - 40); // Línea para la firma
@@ -73,8 +78,14 @@ const GenerarPDF = (presupuesto) => {
     doc.text('Aclaración:', 14, pageHeight - 30);
     doc.line(40, pageHeight - 30, 100, pageHeight - 30); // Línea para la aclaración
 
+    // Añadir una nota legal o condiciones al final del documento
+    // Ajustar automáticamente la descripción si es muy larga
+    doc.text('Notas:', 14, pageHeight - 20);
+    const notaLarga = doc.splitTextToSize("Este presupuesto es válido por 15 días a partir de la fecha de emisión. Los términos y condiciones están sujetos a cambios.'", 180); // Ajusta el ancho máximo
+    doc.text(notaLarga,14, pageHeight - 10);
+
     // Guardar el PDF con el nombre del proyecto
-    doc.save(`presupuesto_${presupuesto.nombre}.pdf`);
+    doc.save(`presupuesto_${presupuesto.nombre.replace(/\s+/g, '_')}.pdf`);
 };
 
 export default GenerarPDF;
