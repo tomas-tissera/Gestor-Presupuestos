@@ -28,6 +28,7 @@ function DPresupuesto() {
     const [estadoPresupuesto, setEstadoPresupuesto] = useState('');
 
     const [url, setUrl] = useState('');
+    const [aclaracion, setAclaracion] = useState('');
 
     useEffect(() => {
         const obtenerPresupuesto = async () => {
@@ -40,6 +41,7 @@ function DPresupuesto() {
                     setPresupuesto(data);
                     setEstadoPresupuesto(data.estado || 'cotizado');
                     setUrl(data.url || '');  // Cargar la URL si existe
+                    setAclaracion(data.aclaracion || '');  // Cargar la URL si existe
                 } else {
                     setError("Presupuesto no encontrado.");
                 }
@@ -224,7 +226,27 @@ function DPresupuesto() {
             alert('Hubo un error al añadir la URL.');
         }
     };
+    const agregarComponenteAclaracion = async () => {
+        if (aclaracion.trim() === '') {
+            alert('Por favor, ingrese una aclaracion válida.');
+            return;
+        }
     
+        try {
+            // Guardar la URL en el documento actual en la colección 'proyectos'
+            const docRef = doc(db, 'proyectos', id);
+            
+            await updateDoc(docRef, {
+                aclaracion: aclaracion,
+                timestamp: new Date(),
+            });
+    
+            alert('aclaracion añadida correctamente');
+        } catch (error) {
+            console.error('Error al agregar la aclaracion: ', error);
+            alert('Hubo un error al añadir la aclaracion.');
+        }
+    };
     
 
     if (error) {
@@ -392,7 +414,35 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
-
+                        <Form.Group as={Row} className="mb-3">
+                            <Form.Label column sm="2">
+                                <strong className={styles.tituloDescripcionText}>Aclaracion:</strong>
+                            </Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    as="textarea"
+                                    rows={1}
+                                    name="aclaraiones"
+                                    placeholder="Aclaraiones..."
+                                    value={aclaracion}
+                                    onChange={(e) => setAclaracion(e.target.value)}
+                                    required
+                                />
+                                <Form.Text className="text-muted">
+                                    Ingrese Aqui si desea realizar alguna "aclaración" o "comentario".
+                                </Form.Text>
+                            </Col>
+                            <Col sm="2">
+                                <Button
+                                    variant="success"
+                                    onClick={agregarComponenteAclaracion}
+                                    title="Añadir"
+                                    className={styles.botonGenerar}
+                                >
+                                    <MdAdd  className={styles.iconAdd}/>
+                                </Button>
+                            </Col>
+                        </Form.Group>
 
 
                         <div className={styles.botones}>
