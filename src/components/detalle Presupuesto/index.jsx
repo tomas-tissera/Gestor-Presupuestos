@@ -10,6 +10,7 @@ import { FaDeleteLeft } from 'react-icons/fa6';
 import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de generación de PDF
 import GenerarWord from "../Generar Word/index"
 import Swal from 'sweetalert2';
+import { MdAdd } from "react-icons/md";
 
 function DPresupuesto() {
     const { id } = useParams();
@@ -38,6 +39,7 @@ function DPresupuesto() {
                     const data = docSnap.data();
                     setPresupuesto(data);
                     setEstadoPresupuesto(data.estado || 'cotizado');
+                    setUrl(data.url || '');  // Cargar la URL si existe
                 } else {
                     setError("Presupuesto no encontrado.");
                 }
@@ -48,9 +50,10 @@ function DPresupuesto() {
                 setIsLoading(false);
             }
         };
-
+    
         obtenerPresupuesto();
     }, [id]);
+    
 
     const handleEstadoChange = (e) => {
         setEstadoPresupuesto(e.target.value);
@@ -207,29 +210,21 @@ function DPresupuesto() {
         }
     
         try {
-            // Guardar la URL en la colección 'componentes' dentro del documento actual
+            // Guardar la URL en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-            const docSnap = await getDoc(docRef);
+            
+            await updateDoc(docRef, {
+                url: url,
+                timestamp: new Date(),
+            });
     
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                const updatedComponentes = [...data.componentes, { url }];
-                
-                await updateDoc(docRef, {
-                    componentes: updatedComponentes,
-                    timestamp: new Date(),
-                });
-                
-                alert('URL añadida correctamente');
-                setUrl(''); // Limpiar el campo de entrada
-            } else {
-                alert('Presupuesto no encontrado.');
-            }
+            alert('URL añadida correctamente');
         } catch (error) {
             console.error('Error al agregar la URL: ', error);
             alert('Hubo un error al añadir la URL.');
         }
     };
+    
     
 
     if (error) {
@@ -393,7 +388,7 @@ function DPresupuesto() {
                                     title="Añadir"
                                     className={styles.botonGenerar}
                                 >
-                                    Añadir
+                                    <MdAdd  className={styles.iconAdd}/>
                                 </Button>
                             </Col>
                         </Form.Group>

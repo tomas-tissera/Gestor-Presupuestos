@@ -56,6 +56,10 @@ h6 {
 p {
     margin: 10px 0;
 }
+.iconAdd{
+    font-size: 25px;
+    
+}
 .formGroup{
     display: grid;
     grid-template-columns: repeat(6, 1fr);
