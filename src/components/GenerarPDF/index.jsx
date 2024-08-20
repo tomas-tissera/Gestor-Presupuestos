@@ -75,6 +75,9 @@ const GenerarPDF = (presupuesto) => {
         theme: 'grid' // Estilo de la tabla (puedes probar otros temas como 'striped')
     });
 
+    // Agregar una nueva página
+    doc.addPage();
+    
     // Pie de página con espacio para la firma y aclaración
     const pageHeight = doc.internal.pageSize.height;
     doc.setFontSize(12);
@@ -87,10 +90,15 @@ const GenerarPDF = (presupuesto) => {
     doc.line(40, pageHeight - 30, 100, pageHeight - 30); // Línea para la aclaración
 
     // Añadir una nota legal o condiciones al final del documento
-    doc.text('Notas:', 14, pageHeight - 20);
-    const notaLarga = doc.splitTextToSize("Este presupuesto es válido por 15 días a partir de la fecha de emisión. Los términos y condiciones están sujetos a cambios.", 180); // Ajusta el ancho máximo
-    doc.text(notaLarga,14, pageHeight - 10);
+    doc.text('Aclaraciones:', 14,  10);presupuesto.aclaracion
+    const notaLarga = doc.splitTextToSize(` Este presupuesto es válido por 15 días a partir de la fecha de emisión. Los términos y condiciones están sujetos a cambios.`, 180); // Ajusta el ancho máximo
+    doc.text(notaLarga,14,  20);
+    const notaLarga1 = doc.splitTextToSize(presupuesto.aclaracion, 180); // Ajusta el ancho máximo
+    doc.text(notaLarga1,14,40);
 
+
+
+    
     // Guardar el PDF con el nombre del proyecto
     doc.save(`presupuesto_${presupuesto.nombre.replace(/\s+/g, '_')}.pdf`);
 };
