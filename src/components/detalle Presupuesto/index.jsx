@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, addDoc, collection } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from "./detallePresupuesto.module.css";
@@ -9,7 +9,7 @@ import { Form, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de generación de PDF
 import GenerarWord from "../Generar Word/index"
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 
 function DPresupuesto() {
     const { id } = useParams();
@@ -25,6 +25,8 @@ function DPresupuesto() {
     const [alertMessage, setAlertMessage] = useState('');
     const [showSaveNotice, setShowSaveNotice] = useState(false);
     const [estadoPresupuesto, setEstadoPresupuesto] = useState('');
+
+    const [url, setUrl] = useState('');
 
     useEffect(() => {
         const obtenerPresupuesto = async () => {
@@ -198,6 +200,37 @@ function DPresupuesto() {
             GenerarWord(presupuesto);
         }
     };
+    const agregarComponenteURL = async () => {
+        if (url.trim() === '') {
+            alert('Por favor, ingrese una URL válida.');
+            return;
+        }
+    
+        try {
+            // Guardar la URL en la colección 'componentes' dentro del documento actual
+            const docRef = doc(db, 'proyectos', id);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const updatedComponentes = [...data.componentes, { url }];
+                
+                await updateDoc(docRef, {
+                    componentes: updatedComponentes,
+                    timestamp: new Date(),
+                });
+                
+                alert('URL añadida correctamente');
+                setUrl(''); // Limpiar el campo de entrada
+            } else {
+                alert('Presupuesto no encontrado.');
+            }
+        } catch (error) {
+            console.error('Error al agregar la URL: ', error);
+            alert('Hubo un error al añadir la URL.');
+        }
+    };
+    
 
     if (error) {
         return <p className={styles.error}>{error}</p>;
@@ -211,7 +244,7 @@ function DPresupuesto() {
                 {isLoading && <Spinner animation="border" variant="primary" />}
                 {alertMessage && <Alert variant="success">{alertMessage}</Alert>}
                 {showSaveNotice && <Alert variant="warning">Se han modificado componentes, no olvide guardar los cambios.</Alert>}
-                
+
                 {presupuesto ? (
                     <div>
                         <div className={styles.tituloDescripcion}>
@@ -231,6 +264,7 @@ function DPresupuesto() {
                                 </Form.Select>
                             </Col>
                         </Form.Group>
+
                         <h5>Componentes:</h5>
                         {presupuesto.componentes.map((componente, index) => (
                             <Form.Group as={Row} className="mb-3" key={index}>
@@ -333,6 +367,39 @@ function DPresupuesto() {
                                 </Col>
                             </Form.Group>
                         </Form.Group>
+
+                        <h5>Otros Componentes</h5>
+                        <Form.Group as={Row} className="mb-3">
+                            <Form.Label column sm="2">
+                                <strong className={styles.tituloDescripcionText}>Url:</strong>
+                            </Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="url"
+                                    placeholder="https://ejemplo.com"
+                                    pattern="https://.*"
+                                    value={url}
+                                    onChange={(e) => setUrl(e.target.value)}
+                                    required
+                                />
+                                <Form.Text className="text-muted">
+                                    Asegúrese de que la URL comience con "https://".
+                                </Form.Text>
+                            </Col>
+                            <Col sm="2">
+                                <Button
+                                    variant="success"
+                                    onClick={agregarComponenteURL}
+                                    title="Añadir"
+                                    className={styles.botonGenerar}
+                                >
+                                    Añadir
+                                </Button>
+                            </Col>
+                        </Form.Group>
+
+
+
                         <div className={styles.botones}>
                             {showSaveNotice && (
                                 <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar} title="Guardar Cambios">Guardar Cambios</Button>
