@@ -227,11 +227,7 @@ function DPresupuesto() {
         }
     };
     const agregarComponenteAclaracion = async () => {
-        if (aclaracion.trim() === '') {
-            alert('Por favor, ingrese una aclaracion válida.');
-            return;
-        }
-    
+
         try {
             // Guardar la URL en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
