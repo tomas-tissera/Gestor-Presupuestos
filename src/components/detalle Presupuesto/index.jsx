@@ -29,7 +29,8 @@ function DPresupuesto() {
 
     const [url, setUrl] = useState('');
     const [aclaracion, setAclaracion] = useState('');
-    const [selectedImages, setSelectedImages] = useState([]);
+    const [files, setFiles] = useState([]); // Estado para almacenar archivos seleccionados
+
     useEffect(() => {
         const obtenerPresupuesto = async () => {
             setIsLoading(true);
@@ -244,11 +245,6 @@ function DPresupuesto() {
         }
     };
 
-    const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-        setSelectedImages(files);
-    };
-
 
     if (error) {
         return <p className={styles.error}>{error}</p>;
@@ -444,6 +440,7 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
+                        
                         <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Imágenes:</strong>
@@ -453,7 +450,7 @@ function DPresupuesto() {
                                     type="file"
                                     multiple
                                     accept="image/*"
-                                    onChange={handleImageChange}
+                                    onChange={handleFileChange}
                                     required
                                 />
                                 <Form.Text className="text-muted">
@@ -463,7 +460,7 @@ function DPresupuesto() {
                             <Col sm="2">
                                 <Button
                                     variant="success"
-                                    // onClick={agregarComponenteAclaracion}
+                                    onClick={agregarImagenesDB}
                                     title="Añadir"
                                     className={styles.botonGenerar}
                                 >
