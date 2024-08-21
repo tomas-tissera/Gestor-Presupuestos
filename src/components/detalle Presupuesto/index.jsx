@@ -208,42 +208,74 @@ function DPresupuesto() {
     };
     const agregarComponenteURL = async () => {
         if (url.trim() === '') {
-            alert('Por favor, ingrese una URL válida.');
+            Swal.fire(
+                'Advertencia',
+                'Por favor, ingrese una URL válida.',
+                'warning'
+            );
             return;
         }
-
+    
         try {
+            setIsLoading(true); // Mostrar indicador de carga si es necesario
+    
             // Guardar la URL en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-
+    
             await updateDoc(docRef, {
                 url: url,
                 timestamp: new Date(),
             });
-
-            alert('URL añadida correctamente');
+    
+            Swal.fire(
+                'Guardado',
+                'La URL ha sido añadida correctamente.',
+                'success'
+            );
         } catch (error) {
             console.error('Error al agregar la URL: ', error);
-            alert('Hubo un error al añadir la URL.');
+            Swal.fire(
+                'Error',
+                'Hubo un error al añadir la URL.',
+                'error'
+            );
+        } finally {
+            setIsLoading(false); // Ocultar indicador de carga si es necesario
         }
     };
+    
     const agregarComponenteAclaracion = async () => {
-
         try {
-            // Guardar la URL en el documento actual en la colección 'proyectos'
+            setIsLoading(true); // Mostrar indicador de carga si es necesario
+    
+            // Guardar la aclaración en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-
+    
             await updateDoc(docRef, {
                 aclaracion: aclaracion,
                 timestamp: new Date(),
             });
-
-            alert('aclaracion añadida correctamente');
+    
+            Swal.fire(
+                'Guardado',
+                'La aclaración ha sido añadida correctamente.',
+                'success'
+            );
+    
+            setAclaracion(''); // Limpiar el campo de aclaración si es necesario
         } catch (error) {
-            console.error('Error al agregar la aclaracion: ', error);
-            alert('Hubo un error al añadir la aclaracion.');
+            console.error('Error al agregar la aclaración: ', error);
+            Swal.fire(
+                'Error',
+                'Hubo un error al añadir la aclaración.',
+                'error'
+            );
+        } finally {
+            setIsLoading(false); // Ocultar indicador de carga si es necesario
         }
     };
+    
+    
 
 
     if (error) {
@@ -441,7 +473,7 @@ function DPresupuesto() {
                             </Col>
                         </Form.Group>
                         
-                        <Form.Group as={Row} className="mb-3">
+                        {/* <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Imágenes:</strong>
                             </Form.Label>
@@ -450,7 +482,7 @@ function DPresupuesto() {
                                     type="file"
                                     multiple
                                     accept="image/*"
-                                    onChange={handleFileChange}
+                                    // onChange={handleFileChange}
                                     required
                                 />
                                 <Form.Text className="text-muted">
@@ -460,14 +492,14 @@ function DPresupuesto() {
                             <Col sm="2">
                                 <Button
                                     variant="success"
-                                    onClick={agregarImagenesDB}
+                                    // onClick={agregarImagenesDB}
                                     title="Añadir"
                                     className={styles.botonGenerar}
                                 >
                                     <MdAdd className={styles.iconAdd} />
                                 </Button>
                             </Col>
-                        </Form.Group>
+                        </Form.Group> */}
 
 
 
