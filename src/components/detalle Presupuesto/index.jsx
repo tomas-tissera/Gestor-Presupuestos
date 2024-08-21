@@ -29,7 +29,7 @@ function DPresupuesto() {
 
     const [url, setUrl] = useState('');
     const [aclaracion, setAclaracion] = useState('');
-
+    const [selectedImages, setSelectedImages] = useState([]);
     useEffect(() => {
         const obtenerPresupuesto = async () => {
             setIsLoading(true);
@@ -52,10 +52,10 @@ function DPresupuesto() {
                 setIsLoading(false);
             }
         };
-    
+
         obtenerPresupuesto();
     }, [id]);
-    
+
 
     const handleEstadoChange = (e) => {
         setEstadoPresupuesto(e.target.value);
@@ -210,16 +210,16 @@ function DPresupuesto() {
             alert('Por favor, ingrese una URL válida.');
             return;
         }
-    
+
         try {
             // Guardar la URL en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-            
+
             await updateDoc(docRef, {
                 url: url,
                 timestamp: new Date(),
             });
-    
+
             alert('URL añadida correctamente');
         } catch (error) {
             console.error('Error al agregar la URL: ', error);
@@ -231,19 +231,24 @@ function DPresupuesto() {
         try {
             // Guardar la URL en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-            
+
             await updateDoc(docRef, {
                 aclaracion: aclaracion,
                 timestamp: new Date(),
             });
-    
+
             alert('aclaracion añadida correctamente');
         } catch (error) {
             console.error('Error al agregar la aclaracion: ', error);
             alert('Hubo un error al añadir la aclaracion.');
         }
     };
-    
+
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedImages(files);
+    };
+
 
     if (error) {
         return <p className={styles.error}>{error}</p>;
@@ -406,7 +411,7 @@ function DPresupuesto() {
                                     title="Añadir"
                                     className={styles.botonGenerar}
                                 >
-                                    <MdAdd  className={styles.iconAdd}/>
+                                    <MdAdd className={styles.iconAdd} />
                                 </Button>
                             </Col>
                         </Form.Group>
@@ -435,10 +440,38 @@ function DPresupuesto() {
                                     title="Añadir"
                                     className={styles.botonGenerar}
                                 >
-                                    <MdAdd  className={styles.iconAdd}/>
+                                    <MdAdd className={styles.iconAdd} />
                                 </Button>
                             </Col>
                         </Form.Group>
+                        <Form.Group as={Row} className="mb-3">
+                            <Form.Label column sm="2">
+                                <strong className={styles.tituloDescripcionText}>Imágenes:</strong>
+                            </Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    required
+                                />
+                                <Form.Text className="text-muted">
+                                    Ingrese Aquí algun tipo de imagen que considere importante para el presupuesto.
+                                </Form.Text>
+                            </Col>
+                            <Col sm="2">
+                                <Button
+                                    variant="success"
+                                    // onClick={agregarComponenteAclaracion}
+                                    title="Añadir"
+                                    className={styles.botonGenerar}
+                                >
+                                    <MdAdd className={styles.iconAdd} />
+                                </Button>
+                            </Col>
+                        </Form.Group>
+
 
 
                         <div className={styles.botones}>
