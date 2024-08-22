@@ -29,6 +29,11 @@ function DPresupuesto() {
     const [url, setUrl] = useState('');
     const [aclaracion, setAclaracion] = useState('');
     const [metodoPago, setMetodoPago] = useState('');
+
+    const [impuesto, setImpuesto] = useState('');
+    const [porcentajeImpuesto, setPorcentaje] = useState('');
+    
+    
     useEffect(() => {
         const obtenerPresupuesto = async () => {
             setIsLoading(true);
@@ -41,6 +46,7 @@ function DPresupuesto() {
                     setEstadoPresupuesto(data.estado || 'cotizado');
                     setUrl(data.url || '');  // Cargar la URL si existe
                     setAclaracion(data.aclaracion || '');  // Cargar la URL si existe
+                    setMetodoPago(data.metodoPago || '');
                 } else {
                     setError("Presupuesto no encontrado.");
                 }
@@ -537,6 +543,48 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
+                        <Form.Group as={Row} className="mb-3">
+      <Form.Label column sm="2">
+        <strong className={styles.tituloDescripcionText}>Impuesto:</strong>
+      </Form.Label>
+      <Col sm="5">
+        <Form.Control
+          type="text"
+          name="impuesto"
+          placeholder="Nombre del impuesto..."
+          value={impuesto}
+        //   onChange={(e) => setImpuesto(e.target.value)}
+          required
+        />
+        <Form.Text className="text-muted">
+          Ingrese el nombre del impuesto.
+        </Form.Text>
+      </Col>
+      <Col sm="3">
+        <Form.Control
+          type="number"
+          step="0.01"
+          name="porcentaje"
+          placeholder="Porcentaje..."
+          value={porcentajeImpuesto}
+        //   onChange={(e) => setPorcentaje(e.target.value)}
+          required
+        />
+        <Form.Text className="text-muted">
+          Ingrese el porcentaje del impuesto.
+        </Form.Text>
+      </Col>
+      <Col sm="2">
+        <Button
+          variant="success"
+        //   onClick={() => agregarImpuesto({ impuesto, porcentaje })}
+          title="Añadir"
+          className={styles.botonGenerar}
+        >
+          <MdAdd className={styles.iconAdd} />
+        </Button>
+      </Col>
+    </Form.Group>
                         {/* <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Imágenes:</strong>
