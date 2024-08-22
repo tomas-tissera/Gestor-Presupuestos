@@ -11,7 +11,6 @@ import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de genera
 import GenerarWord from "../Generar Word/index"
 import Swal from 'sweetalert2';
 import { MdAdd } from "react-icons/md";
-
 function DPresupuesto() {
     const { id } = useParams();
     const [presupuesto, setPresupuesto] = useState(null);
@@ -29,8 +28,7 @@ function DPresupuesto() {
 
     const [url, setUrl] = useState('');
     const [aclaracion, setAclaracion] = useState('');
-    const [files, setFiles] = useState([]); // Estado para almacenar archivos seleccionados
-
+    const [metodoPago, setMetodoPago] = useState('');
     useEffect(() => {
         const obtenerPresupuesto = async () => {
             setIsLoading(true);
@@ -215,18 +213,18 @@ function DPresupuesto() {
             );
             return;
         }
-    
+
         try {
             setIsLoading(true); // Mostrar indicador de carga si es necesario
-    
+
             // Guardar la URL en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-    
+
             await updateDoc(docRef, {
                 url: url,
                 timestamp: new Date(),
             });
-    
+
             Swal.fire(
                 'Guardado',
                 'La URL ha sido añadida correctamente.',
@@ -243,25 +241,25 @@ function DPresupuesto() {
             setIsLoading(false); // Ocultar indicador de carga si es necesario
         }
     };
-    
+
     const agregarComponenteAclaracion = async () => {
         try {
             setIsLoading(true); // Mostrar indicador de carga si es necesario
-    
+
             // Guardar la aclaración en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-    
+
             await updateDoc(docRef, {
                 aclaracion: aclaracion,
                 timestamp: new Date(),
             });
-    
+
             Swal.fire(
                 'Guardado',
                 'La aclaración ha sido añadida correctamente.',
                 'success'
             );
-    
+
             setAclaracion(''); // Limpiar el campo de aclaración si es necesario
         } catch (error) {
             console.error('Error al agregar la aclaración: ', error);
@@ -274,7 +272,46 @@ function DPresupuesto() {
             setIsLoading(false); // Ocultar indicador de carga si es necesario
         }
     };
+
+    const agregarMetodoPago = async () => {
+        if (!metodoPago) {
+            Swal.fire(
+                'Advertencia',
+                'Por favor ingrese un método de pago.',
+                'warning'
+            );
+            return;
+        }
     
+        try {
+            setIsLoading(true); // Mostrar indicador de carga si es necesario
+    
+            // Guardar el método de pago en el documento actual en la colección 'proyectos'
+            const docRef = doc(db, 'proyectos', id);
+    
+            await updateDoc(docRef, {
+                metodoPago: metodoPago, // Añadir el método de pago en el documento
+                timestamp: new Date(),
+            });
+    
+            Swal.fire(
+                'Guardado',
+                'El método de pago ha sido añadido correctamente.',
+                'success'
+            );
+    
+            setMetodoPago(''); // Limpiar el campo de entrada si es necesario
+        } catch (error) {
+            console.error('Error añadiendo el método de pago: ', error);
+            Swal.fire(
+                'Error',
+                'Hubo un error al añadir el método de pago.',
+                'error'
+            );
+        } finally {
+            setIsLoading(false); // Ocultar indicador de carga si es necesario
+        }
+    };
     
 
 
@@ -472,7 +509,34 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
-                        
+                        <Form.Group as={Row} className="mb-3">
+                            <Form.Label column sm="2">
+                                <strong className={styles.tituloDescripcionText}>Método de Pago:</strong>
+                            </Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    name="metodoPago"
+                                    placeholder="Método de pago..."
+                                    value={metodoPago}
+                                    onChange={(e) => setMetodoPago(e.target.value)}
+                                    required
+                                />
+                                <Form.Text className="text-muted">
+                                    Ingrese aquí el método de pago que se utilizará.
+                                </Form.Text>
+                            </Col>
+                            <Col sm="2">
+                                <Button
+                                    variant="success"
+                                    onClick={agregarMetodoPago}
+                                    title="Añadir"
+                                    className={styles.botonGenerar}
+                                >
+                                    <MdAdd className={styles.iconAdd} />
+                                </Button>
+                            </Col>
+                        </Form.Group>
                         {/* <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Imágenes:</strong>
