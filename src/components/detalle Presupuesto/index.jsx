@@ -11,6 +11,7 @@ import GenerarPDF from '../GenerarPDF/index'; // Importa el componente de genera
 import GenerarWord from "../Generar Word/index"
 import Swal from 'sweetalert2';
 import { MdAdd } from "react-icons/md";
+
 function DPresupuesto() {
     const { id } = useParams();
     const [presupuesto, setPresupuesto] = useState(null);
@@ -30,10 +31,12 @@ function DPresupuesto() {
     const [aclaracion, setAclaracion] = useState('');
     const [metodoPago, setMetodoPago] = useState('');
 
-    const [impuesto, setImpuesto] = useState('');
-    const [porcentajeImpuesto, setPorcentaje] = useState('');
-    
-    
+    const [impuestos, setImpuestos] = useState([]); // Nuevo estado para los impuestos
+    const [nuevoImpuesto, setNuevoImpuesto] = useState({
+        nombre: '',
+        porcentaje: ''
+    });
+
     useEffect(() => {
         const obtenerPresupuesto = async () => {
             setIsLoading(true);
@@ -47,6 +50,7 @@ function DPresupuesto() {
                     setUrl(data.url || '');  // Cargar la URL si existe
                     setAclaracion(data.aclaracion || '');  // Cargar la URL si existe
                     setMetodoPago(data.metodoPago || '');
+                    setImpuestos(data.impuestos || []); // Cargar los impuestos si existen
                 } else {
                     setError("Presupuesto no encontrado.");
                 }
@@ -92,12 +96,19 @@ function DPresupuesto() {
         setShowSaveNotice(true);
     };
 
-    const calcularTotal = (componentes) => {
-        return componentes.reduce((total, comp) => {
+    const calcularTotal = (componentes, impuestos) => {
+        const subtotal = componentes.reduce((total, comp) => {
             const precio = parseInt(comp.precio, 10) || 0;
             const cantidad = parseInt(comp.cantidad, 10) || 1;
             return total + (precio * cantidad);
         }, 0);
+
+        const totalImpuestos = impuestos.reduce((total, imp) => {
+            const porcentaje = parseFloat(imp.porcentaje) || 0;
+            return total + (subtotal * (porcentaje / 100));
+        }, 0);
+
+        return subtotal + totalImpuestos;
     };
 
     const agregarComponente = async () => {
@@ -110,7 +121,7 @@ function DPresupuesto() {
         try {
             setIsLoading(true);
             const updatedComponentes = [...presupuesto.componentes, nuevoComponenteConPrecio];
-            const updatedTotal = calcularTotal(updatedComponentes);
+            const updatedTotal = calcularTotal(updatedComponentes, impuestos);
 
             await updateDoc(doc(db, "proyectos", id), {
                 componentes: updatedComponentes,
@@ -137,7 +148,7 @@ function DPresupuesto() {
         try {
             setIsLoading(true);
             const updatedComponentes = presupuesto.componentes.filter((_, i) => i !== index);
-            const updatedTotal = calcularTotal(updatedComponentes);
+            const updatedTotal = calcularTotal(updatedComponentes, impuestos);
 
             await updateDoc(doc(db, "proyectos", id), {
                 componentes: updatedComponentes,
@@ -288,24 +299,24 @@ function DPresupuesto() {
             );
             return;
         }
-    
+
         try {
             setIsLoading(true); // Mostrar indicador de carga si es necesario
-    
+
             // Guardar el método de pago en el documento actual en la colección 'proyectos'
             const docRef = doc(db, 'proyectos', id);
-    
+
             await updateDoc(docRef, {
                 metodoPago: metodoPago, // Añadir el método de pago en el documento
                 timestamp: new Date(),
             });
-    
+
             Swal.fire(
                 'Guardado',
                 'El método de pago ha sido añadido correctamente.',
                 'success'
             );
-    
+
             setMetodoPago(''); // Limpiar el campo de entrada si es necesario
         } catch (error) {
             console.error('Error añadiendo el método de pago: ', error);
@@ -318,7 +329,64 @@ function DPresupuesto() {
             setIsLoading(false); // Ocultar indicador de carga si es necesario
         }
     };
-    
+
+    const agregarImpuesto = async () => {
+        const porcentajeNumerico = parseFloat(nuevoImpuesto.porcentaje) || 0;
+        const nuevoImpuestoConPorcentaje = {
+            ...nuevoImpuesto,
+            porcentaje: porcentajeNumerico
+        };
+
+        try {
+            setIsLoading(true);
+            const updatedImpuestos = [...impuestos, nuevoImpuestoConPorcentaje];
+            const updatedTotal = calcularTotal(presupuesto.componentes, updatedImpuestos);
+
+            await updateDoc(doc(db, "proyectos", id), {
+                impuestos: updatedImpuestos,
+                total: updatedTotal
+            });
+
+            setImpuestos(updatedImpuestos);
+            setPresupuesto({
+                ...presupuesto,
+                total: updatedTotal
+            });
+
+            setNuevoImpuesto({ nombre: '', porcentaje: '' });
+            setAlertMessage('Impuesto agregado correctamente.');
+        } catch (err) {
+            console.error("Error al agregar el impuesto: ", err);
+            setError("Error al agregar el impuesto.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const eliminarImpuesto = async (index) => {
+        try {
+            setIsLoading(true);
+            const updatedImpuestos = impuestos.filter((_, i) => i !== index);
+            const updatedTotal = calcularTotal(presupuesto.componentes, updatedImpuestos);
+
+            await updateDoc(doc(db, "proyectos", id), {
+                impuestos: updatedImpuestos,
+                total: updatedTotal
+            });
+
+            setImpuestos(updatedImpuestos);
+            setPresupuesto({
+                ...presupuesto,
+                total: updatedTotal
+            });
+        } catch (err) {
+            console.error("Error al eliminar el impuesto: ", err);
+            setError("Error al eliminar el impuesto.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
 
     if (error) {
@@ -407,7 +475,12 @@ function DPresupuesto() {
                             </Form.Group>
                         ))}
 
-                        <p><strong>Total:</strong> ${presupuesto.total}</p>
+                        <p><strong>Subtotal:</strong> ${presupuesto.componentes.reduce((total, comp) => {
+                            const precio = parseInt(comp.precio, 10) || 0;
+                            const cantidad = parseInt(comp.cantidad, 10) || 1;
+                            return total + (precio * cantidad);
+                        }, 0)}</p>
+
                         <h5>Añadir Componente</h5>
                         <Form.Group as={Row} className="mb-3">
                             <Col sm="3">
@@ -543,78 +616,74 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3">
-      <Form.Label column sm="2">
-        <strong className={styles.tituloDescripcionText}>Impuesto:</strong>
-      </Form.Label>
-      <Col sm="5">
-        <Form.Control
-          type="text"
-          name="impuesto"
-          placeholder="Nombre del impuesto..."
-          value={impuesto}
-        //   onChange={(e) => setImpuesto(e.target.value)}
-          required
-        />
-        <Form.Text className="text-muted">
-          Ingrese el nombre del impuesto.
-        </Form.Text>
-      </Col>
-      <Col sm="3">
-        <Form.Control
-          type="number"
-          step="0.01"
-          name="porcentaje"
-          placeholder="Porcentaje..."
-          value={porcentajeImpuesto}
-        //   onChange={(e) => setPorcentaje(e.target.value)}
-          required
-        />
-        <Form.Text className="text-muted">
-          Ingrese el porcentaje del impuesto.
-        </Form.Text>
-      </Col>
-      <Col sm="2">
-        <Button
-          variant="success"
-        //   onClick={() => agregarImpuesto({ impuesto, porcentaje })}
-          title="Añadir"
-          className={styles.botonGenerar}
-        >
-          <MdAdd className={styles.iconAdd} />
-        </Button>
-      </Col>
-    </Form.Group>
-                        {/* <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm="2">
-                                <strong className={styles.tituloDescripcionText}>Imágenes:</strong>
-                            </Form.Label>
-                            <Col sm="8">
+                        {/* Formulario para agregar nuevo impuesto */}
+                        <h4>Agregar Impuesto:</h4>
+                        <Form.Group as={Row}>
+                            <Col>
                                 <Form.Control
-                                    type="file"
-                                    multiple
-                                    accept="image/*"
-                                    // onChange={handleFileChange}
-                                    required
+                                    type="text"
+                                    placeholder="Nombre del Impuesto"
+                                    name="nombre"
+                                    value={nuevoImpuesto.nombre}
+                                    onChange={(e) =>
+                                        setNuevoImpuesto({ ...nuevoImpuesto, nombre: e.target.value })
+                                    }
                                 />
-                                <Form.Text className="text-muted">
-                                    Ingrese Aquí algun tipo de imagen que considere importante para el presupuesto.
-                                </Form.Text>
                             </Col>
-                            <Col sm="2">
-                                <Button
-                                    variant="success"
-                                    // onClick={agregarImagenesDB}
-                                    title="Añadir"
-                                    className={styles.botonGenerar}
-                                >
-                                    <MdAdd className={styles.iconAdd} />
+                            <Col>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Porcentaje"
+                                    name="porcentaje"
+                                    value={nuevoImpuesto.porcentaje}
+                                    onChange={(e) =>
+                                        setNuevoImpuesto({ ...nuevoImpuesto, porcentaje: e.target.value })
+                                    }
+                                />
+                            </Col>
+                            <Col>
+                                <Button variant="primary" onClick={agregarImpuesto}>
+                                    Agregar
                                 </Button>
                             </Col>
-                        </Form.Group> */}
+                        </Form.Group>
 
-
-
+                        {/* Mostrar impuestos */}
+                        <h4 className={styles.inpuestoTitulo}>Impuestos:</h4>
+                        {impuestos.length > 0 ? (
+                            impuestos.map((imp, index) => (
+                                <Form.Group as={Row} className="mb-3" key={index}>
+                                    <Col sm="6">
+                                        <Form.Control
+                                            as="textarea"
+                                            rows={1}
+                                            placeholder="Nombre del Impuesto"
+                                            value={imp.nombre}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col sm="3">
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Porcentaje"
+                                            value={`${imp.porcentaje}%`}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col sm="2">
+                                        <FaDeleteLeft
+                                            title="Eliminar"
+                                            className={styles.deletIcon}
+                                            onClick={() => eliminarImpuesto(index)}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                            ))
+                        ) : (
+                            <p>No hay impuestos agregados.</p>
+                        )}
+                        <h5></h5>
+                        <p className={styles.total}><strong>Total:</strong> ${presupuesto.total}</p>
                         <div className={styles.botones}>
                             {showSaveNotice && (
                                 <Button variant="success" onClick={guardarCambios} className={styles.botonGenerar} title="Guardar Cambios">Guardar Cambios</Button>
