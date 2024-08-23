@@ -175,7 +175,7 @@ const GenerarPDF = (presupuesto) => {
         doc.save(`presupuesto_${presupuesto.nombre.replace(/\s+/g, '_')}.pdf`);
     }else{
 
-        footerYPosition += 20; // Espacio adicional para la firma
+        footerYPosition += 30; // Espacio adicional para la firma
         doc.text('Firma:', 14, footerYPosition);
         doc.line(40, footerYPosition, 100, footerYPosition); // Línea para la firma
     
