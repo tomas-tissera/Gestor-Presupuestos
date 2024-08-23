@@ -277,7 +277,6 @@ function DPresupuesto() {
                 'success'
             );
 
-            setAclaracion(''); // Limpiar el campo de aclaración si es necesario
         } catch (error) {
             console.error('Error al agregar la aclaración: ', error);
             Swal.fire(
