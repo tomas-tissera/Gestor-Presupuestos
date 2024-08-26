@@ -1,19 +1,24 @@
-/* src/components/detallePresupuesto.module.css */
-.formEstado{
-    background-color: rgba(0, 0, 0, 0) ;
-    max-width: none;
-    box-shadow: none;
-    margin: 0;
-    padding:  15px 0;
-}
-.formLabel{
-    
-    padding:  0;
-}
+/* Estilos generales del contenedor */
 .container {
     padding: 20px;
     max-width: 900px;
     margin: 0 auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del formulario de estado */
+.formEstado {
+    background-color: rgba(0, 0, 0, 0);
+    max-width: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 15px 0;
+}
+
+.formLabel {
+    padding: 0;
 }
 
 h4 {
@@ -42,7 +47,7 @@ h6 {
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(255, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #f9f9f9;
 }
 
@@ -66,108 +71,98 @@ h6 {
 p {
     margin: 10px 0;
 }
-.iconAdd{
+
+.iconAdd {
     font-size: 25px;
-    
 }
-.formGroup{
+
+.formGroup {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 5px;
     grid-row-gap: 0px;
-    }
+}
 
-    .div1 { grid-area: 1 / 1 / 2 / 3; }
-    .div2 { grid-area: 1 / 3 / 2 / 5; }
-    .div3 { grid-area: 1 / 5 / 2 / 6; }
-    .div4 { grid-area: 1 / 6 / 2 / 7; }
-    .div5 { grid-area: 2 / 1 / 3 / 7; }
-    .deletIcon {
-        color: #dc3545;
-        cursor: pointer;
-        font-size: 30px;
-        transition: color 0.3s ease;    
-    }
-    
-    .deletIcon:hover {
-        color: #a71d2a;
-    }
-    .container {
-        padding: 45px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .error {
-        color: red;
-        font-weight: bold;
-    }
-    
-    .deletIcon {
-        color: red;
-        cursor: pointer;
-    }
-    
-    h4 {
-        margin-bottom: 20px;
-    }
-    
-    h5 {
-        margin-top: 20px;
-    }
-    
-    .btn {
-        margin-top: 10px;
-    }
-    .botones{
-        display: flex;
-        flex-direction: column;
-        padding: 15px;
-    }
-    .botonGenerar{
-        margin: 5px;
-        background-color: #3498db;
-        border: none;
-    }
-    .custom-number-input {
-        width: 80px; /* Ajusta el ancho según sea necesario */
-        height: 36px; /* Ajusta la altura según sea necesario */
-        font-size: 14px; /* Tamaño de la fuente del texto */
-        padding: 4px 8px; /* Espaciado interno del input */
-    }
-    
-    .custom-number-input::-webkit-inner-spin-button,
-    .custom-number-input::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    .tituloDescripcionText{
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-    }
-    .tituloDescripcion{
-        text-align: center;
-    }
-    .btnAdd{
-        padding: 15px;
-    }
-    .inpuestoTitulo{
-        padding-top: 15px;
-    }
-    .inpuesto{
-        background-color:#d1d0d0;
-        border-radius: 8px;
-        padding: 5px;
-    }
-    .total{
-        font-size: 25px;
-    }
+.div1 { grid-area: 1 / 1 / 2 / 3; }
+.div2 { grid-area: 1 / 3 / 2 / 5; }
+.div3 { grid-area: 1 / 5 / 2 / 6; }
+.div4 { grid-area: 1 / 6 / 2 / 7; }
+.div5 { grid-area: 2 / 1 / 3 / 7; }
+
+.deletIcon {
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 30px;
+    transition: color 0.3s ease;
+}
+
+.deletIcon:hover {
+    color: #a71d2a;
+}
+
+.btn {
+    margin-top: 10px;
+}
+
+.botones {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.botonGenerar {
+    margin: 5px;
+    background-color: #3498db;
+    border: none;
+}
+
+.custom-number-input {
+    width: 80px;
+    height: 36px;
+    font-size: 14px;
+    padding: 4px 8px;
+}
+
+.custom-number-input::-webkit-inner-spin-button,
+.custom-number-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tituloDescripcionText {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.tituloDescripcion {
+    text-align: center;
+}
+
+.btnAdd {
+    padding: 15px;
+}
+
+.inpuestoTitulo {
+    padding-top: 15px;
+}
+
+.inpuesto {
+    background-color: #d1d0d0;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.total {
+    font-size: 25px;
+}
+
+/* Media queries para dispositivos móviles */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
+        max-width: 100%; /* Asegura que el contenedor use el ancho completo en móviles */
     }
 
     .componente,
@@ -179,5 +174,24 @@ p {
     h5,
     h6 {
         font-size: smaller;
+    }
+
+    .formGroup {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+        grid-template-rows: auto; /* Ajusta las filas automáticamente */
+        grid-column-gap: 0;
+        grid-row-gap: 10px; /* Espacio entre filas */
+    }
+
+    .div1, .div2, .div3, .div4, .div5 {
+        grid-column: span 1; /* Cada div ocupa una columna completa */
+    }
+    
+    .iconAdd {
+        font-size: 20px; /* Ajusta el tamaño del icono para móviles */
+    }
+
+    .deletIcon {
+        font-size: 24px; /* Ajusta el tamaño del icono de eliminar para móviles */
     }
 }

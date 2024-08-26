@@ -1,16 +1,52 @@
-.navbar{
-    height: auto; 
+/* Estilos base para la barra de navegación */
+.navbar {
+    height: auto;
     justify-content: start;
     background-color: rgba(0, 0, 0, 0);
 }
-.imgIcon{
+
+.imgIcon {
     width: 90px;
     background-color: white;
     border-radius: 15px;
     padding: 5px;
 }
-.navbar2{
+
+.navbar2 {
     height: 120px;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
+    align-items: center; /* Alinea verticalmente los elementos */
+}
+
+.navbarToggle {
+    border: none; /* Quita el borde del botón de menú */
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+}
+
+.activeLink {
+    font-weight: bold;
+    color: #007bff; /* Color para el enlace activo */
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 990px) {
+    .navbar {
+        background-color: rgba(0, 0, 0, 0); /* Fondo oscuro para mejor contraste */
+        padding: 10px; /* Añadir relleno */
+    }
+
+    .imgIcon {
+        width: 70px; /* Tamaño del icono más pequeño en móviles */
+        padding: 4px; /* Ajustar el padding */
+    }
+
+    .navbar2 {
+        height: auto; /* Ajustar altura automáticamente */
+        flex-direction: column; /* Disposición en columna en móviles */
+    }
 }

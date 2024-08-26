@@ -1,74 +1,88 @@
-/* Container styles */
+/* Estilos para contenedor y fila */
 .container {
-    height: 100vh; /* Full viewport height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f9fa; /* Light gray background for contrast */
-  }
-  
-  /* Row styles */
+  height: 100vh; /* Altura completa del viewport */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa; /* Fondo gris claro para contraste */
+}
+
+.row {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.user {
+  font-size: 4rem; /* Tamaño más grande para prominencia */
+  color: #007bff; /* Color primario de Bootstrap */
+  margin-bottom: 20px;
+}
+
+.contenedor_usuario {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  border-radius: 4px;
+  padding: 10px;
+  width: 150px;
+  border: 1px solid #ced4da;
+  font-size: 1rem;
+}
+
+.btn {
+  background-color: #007bff;
+  border-color: #007bff;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3; /* Sombra más oscura al pasar el mouse */
+  border-color: #0056b3;
+}
+
+.alert {
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.text-center {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.text-center a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.text-center a:hover {
+  text-decoration: underline;
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 767px) {
   .row {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
+      padding: 15px;
+      max-width: 100%;
+      /* Ajusta el ancho al 100% para pantallas pequeñas */
   }
-  
-  /* User icon */
+
   .user {
-    font-size: 4rem; /* Larger size for prominence */
-    color: #007bff; /* Bootstrap primary color */
-    margin-bottom: 20px;
+      font-size: 3rem; /* Tamaño de fuente reducido para pantallas pequeñas */
   }
-  
-  /* Input field container styles */
-  .contenedor_usuario {
-    margin-bottom: 15px;
-  }
-  
-  /* Input styles */
+
   .form-control {
-    border-radius: 4px;
-    padding: 10px;
-    width: 150px;
-    border: 1px solid #ced4da;
-    font-size: 1rem;
+      width: 100%; /* Input field ocupa el 100% del ancho del contenedor */
+      font-size: 0.9rem;
   }
-  
-  /* Button styles */
-  .btn {
-    background-color: #007bff;
-    border-color: #007bff;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-    border-color: #0056b3;
-  }
-  
-  /* Alert styles */
-  .alert {
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-  }
-  
-  /* Text center and link styles */
+
   .text-center {
-    margin-top: 20px;
-    font-size: 0.9rem;
+      font-size: 0.8rem; /* Tamaño de fuente reducido en la sección de texto centrado */
   }
-  
-  .text-center a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .text-center a:hover {
-    text-decoration: underline;
-  }
-  
+}
