@@ -1,0 +1,133 @@
+/* Estilos generales del contenedor */
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para la lista de presupuestos */
+.lista {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+/* Estilo para cada elemento de la lista */
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilo para los botones */
+button {
+    padding: 6px 12px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #ddd;
+}
+
+/* Estilo específico para el botón "Eliminar" */
+.deleteButton {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.deleteButton:hover {
+    background-color: #c0392b;
+}
+
+/* Estilo específico para el botón "Ver detalles" */
+button:first-of-type {
+    background-color: #3498db;
+    color: #fff;
+}
+
+button:first-of-type:hover {
+    background-color: #2980b9;
+}
+
+/* Estilo para el mensaje de error */
+.error {
+    color: #e74c3c;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Estilo para el contenedor de carga */
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+.container {
+    padding: 20px;
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.lista {
+    list-style-type: none;
+    padding: 0;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.item div {
+    flex-grow: 1;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    margin-right: 10px;
+}
+
+.item button {
+    margin-left: 10px;
+}
+.itemText{
+    text-align: left;
+}
+.deleteIcon{
+    font-size: 20px;
+    padding: 0 0 3px 3px;
+}

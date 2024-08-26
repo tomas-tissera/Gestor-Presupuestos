@@ -1,0 +1,121 @@
+.fomrulario{
+    padding: 0 150px;
+    margin-bottom: 50px;
+}
+.icono{
+    font-size: 30px;
+    transition: 1s;
+    cursor: pointer;
+    display: a;
+}
+.icono:hover{
+    color:rgb(255, 255, 255);
+    background-color: green;
+    border-radius: 100%;
+    padding: 5px;
+}
+.deletIcon{
+    font-size: 35px;
+    display: flex;
+    text-align: center;
+    transition: 1s;
+    
+}
+.deletIcon:hover{
+    color:rgb(245, 52, 52);
+}
+.textLeft{
+    text-align: left;
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.componenteContainer {
+    padding: 10px;
+    border-left: 4px solid #007bff;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el contenedor de subcomponentes */
+/* .subcomponentesContainer {
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 2px dashed #6c757d;
+    margin-top: 10px;
+} */
+
+/* Estilo para ocultar el borde punteado si no hay subcomponentes */
+.noSubcomponentes .subcomponentesContainer {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.subcomponente {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+.subcomponenteLabel {
+    font-style: italic;
+}
+
+/* Íconos */
+.iconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.iconLink {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.iconLink:hover {
+    color: #0056b3;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+    position: relative;
+}
+
+.divider:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -10px;
+    background: white;
+    padding: 0 10px;
+}
+
+.icono {
+    font-size: 24px;
+    margin-left: 8px;
+}
+
+.deletIcon {
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 30px;
+    transition: color 0.3s ease;
+}
+
+.deletIcon:hover {
+    color: #a71d2a;
+}

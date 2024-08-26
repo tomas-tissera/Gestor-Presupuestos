@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import styles from './InfoPage.module.css';
-import Navbar from "../../componets/navbar/index"
+import Navbar from "../../components/navbar/index"
 function InfoPage() {
   const libraries = [
     { name: 'React', description: 'Biblioteca para construir interfaces de usuario' },

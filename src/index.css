@@ -1,0 +1,6 @@
+
+/* Resetea el margen del cuerpo para que no haya espacios innecesarios */
+body {
+  width: 100%;
+  margin: 0;
+}

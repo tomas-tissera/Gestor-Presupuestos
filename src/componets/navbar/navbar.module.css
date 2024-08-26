@@ -1,0 +1,16 @@
+.navbar{
+    height: auto; 
+    justify-content: start;
+    background-color: rgba(0, 0, 0, 0);
+}
+.imgIcon{
+    width: 90px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 5px;
+}
+.navbar2{
+    height: 120px;
+    display: flex;
+    justify-content:space-between;
+}

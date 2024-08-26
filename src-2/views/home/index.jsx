@@ -1,5 +1,5 @@
-import Navbar from "../../componets/navbar/index";
-import Presupuestos from "../../componets/mostrar Presupuestos/index";
+import Navbar from "../../components/navbar";
+import Presupuestos from "../../components/mostrar Presupuestos";
 const Home = () => {
    
     return (
