@@ -1,29 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth'; // Importar para obtener el usuario autenticado
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from "./mPresupuestos.module.css";
 import { useNavigate } from 'react-router-dom';
-import { Spinner, Form, Row, Col } from 'react-bootstrap'; // Importar componentes adicionales de Bootstrap
+import { Spinner, Form, Row, Col } from 'react-bootstrap'; 
 import Swal from 'sweetalert2'; 
 import { TbTrashX } from "react-icons/tb";
-import Navbar from "../navbar/index"
+import Navbar from "../navbar/index";
+
 function mPresupuestos() {
     const [presupuestos, setPresupuestos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true); 
-    const [estadoFiltro, setEstadoFiltro] = useState(''); // Estado para el filtro por estado
-    const [buscarTitulo, setBuscarTitulo] = useState(''); // Estado para la búsqueda por título
+    const [estadoFiltro, setEstadoFiltro] = useState(''); 
+    const [buscarTitulo, setBuscarTitulo] = useState(''); 
     const navigate = useNavigate(); 
+
+    const auth = getAuth();
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     useEffect(() => {
         const obtenerPresupuestos = async () => {
+            if (!userId) {
+                setError("No se ha encontrado el usuario.");
+                setLoading(false);
+                return;
+            }
+
             try {
                 const querySnapshot = await getDocs(collection(db, "proyectos"));
-                const listaPresupuestos = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
+                const listaPresupuestos = querySnapshot.docs
+                    .map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                    .filter(presupuesto => presupuesto.userId === userId); // Filtrar por el ID del usuario
+
                 console.log("Presupuestos recuperados:", listaPresupuestos);
                 setPresupuestos(listaPresupuestos);
             } catch (err) {
@@ -35,7 +49,7 @@ function mPresupuestos() {
         };
 
         obtenerPresupuestos();
-    }, []);
+    }, [userId]);
 
     const verDetalles = (id) => {
         navigate(`/presupuesto/${id}`); 
@@ -113,6 +127,8 @@ function mPresupuestos() {
                         </Form>
                         {error ? (
                             <p className={styles.error}>{error}</p>
+                        ) : presupuestosFiltrados.length === 0 ? (
+                            <p className={styles.error}>No tienes presupuestos creados.</p>
                         ) : (
                             <ul className={styles.lista}>
                                 {presupuestosFiltrados.map(presupuesto => (

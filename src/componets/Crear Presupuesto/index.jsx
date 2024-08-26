@@ -6,12 +6,13 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import { FaDeleteLeft } from 'react-icons/fa6';
-import { MdOutlinePlaylistAdd, MdOutlineExpandMore } from 'react-icons/md';
-import { RiDeleteBin5Fill } from 'react-icons/ri';
+import { MdOutlinePlaylistAdd } from 'react-icons/md';
+import { getAuth } from 'firebase/auth'; // Importar para obtener el usuario autenticado
 import { db } from '../../firebase'; // Asegúrate de ajustar la ruta si es necesario
 import { collection, addDoc } from 'firebase/firestore';
 import styles from './cPresupuesto.module.css';
-import NavBar from "../navbar/index"
+import NavBar from "../navbar/index";
+
 const CrearPresupuesto = () => {
     const [nombreProyecto, setNombreProyecto] = useState('');
     const [descripcionProyecto, setDescripcionProyecto] = useState('');
@@ -19,6 +20,9 @@ const CrearPresupuesto = () => {
     const [componentes, setComponentes] = useState([{ nombre: '', descripcion: '', precio: 0, cantidad: 0, subcomponentes: [] }]);
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+
+    const auth = getAuth();
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const agregarComponente = () => {
         setComponentes([...componentes, { nombre: '', descripcion: '', precio: 0, cantidad: 0, subcomponentes: [] }]);
@@ -44,8 +48,6 @@ const CrearPresupuesto = () => {
         nuevosComponentes[index].cantidad = parseInt(value, 10) || 0;
         setComponentes(nuevosComponentes);
     };
-
-  
 
     const handleSubcomponenteChange = (indexComponente, indexSubcomponente, event) => {
         const { name, value } = event.target;
@@ -115,6 +117,11 @@ const CrearPresupuesto = () => {
             }
         }
 
+        if (!userId) {
+            alert("No se ha encontrado el usuario.");
+            return;
+        }
+
         setLoading(true);
 
         const proyecto = {
@@ -122,7 +129,8 @@ const CrearPresupuesto = () => {
             descripcion: descripcionProyecto,
             componentes: componentes,
             total: calcularTotalGeneral(),
-            estado: estadoPresupuesto, // Incluir el estado del presupuesto
+            estado: estadoPresupuesto,
+            userId: userId // Incluir el userId
         };
 
         try {
@@ -233,7 +241,6 @@ const CrearPresupuesto = () => {
                                     />
                                 </Col>
                             </Form.Group>
-                           
                         </div>
                     ))}
                     <div className={styles.iconContainer}>
