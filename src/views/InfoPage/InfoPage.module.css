@@ -1,31 +1,66 @@
 /* InfoPage.module.css */
+.row{
+  max-width: none;
+}
+/* Estilo para el contenedor principal */
 .container {
-    padding: 20px;
-  }
-  
-  .heading {
-    margin-bottom: 20px;
-  }
-  
-  .section {
-    margin-bottom: 15px;
-  }
-  
-  .title {
-    font-weight: bold;
-  }
-  
-  .list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .listItem {
-    margin-bottom: 10px;
-  }
-  
-  .footer {
-    margin-top: 20px;
-    font-style: italic;
-  }
-  
+  padding: 20px;
+  background-color: #f8f9fa; /* Color de fondo claro */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Estilo para el encabezado principal */
+.heading {
+  text-align: center; /* Centrar el texto */
+  margin-bottom: 30px; /* Espacio debajo del encabezado */
+  font-size: 2rem; /* Tamaño de fuente más grande */
+  color: #333; /* Color de texto oscuro */
+}
+
+/* Estilo para cada sección */
+.section {
+  margin-bottom: 20px; /* Espacio debajo de cada sección */
+  padding: 15px;
+  background-color: #fff; /* Fondo blanco */
+  border-radius: 5px; /* Bordes ligeramente redondeados */
+  border: 1px solid #ddd; /* Borde sutil */
+  height: 100%;
+}
+
+/* Estilo para los títulos de las secciones */
+.title {
+  font-size: 1.5rem; /* Tamaño de fuente más grande */
+  margin-bottom: 10px; /* Espacio debajo del título */
+  color: #007bff; /* Color del texto azul */
+}
+
+/* Estilo para las listas */
+.list {
+  list-style-type: none; /* Quitar el estilo de lista predeterminado */
+  padding: 0; /* Quitar el padding por defecto */
+}
+
+.listItem {
+  margin-bottom: 10px; /* Espacio debajo de cada elemento de la lista */
+  font-size: 1rem; /* Tamaño de fuente estándar */
+  color: #555; /* Color de texto gris oscuro */
+}
+
+/* Estilo para el pie de página */
+.footer {
+  position: fixed; /* Fija el pie de página en la parte inferior */
+  bottom: 0; /* Posición en la parte inferior de la página */
+  left: 0; /* Extiende a la izquierda */
+  width: 100%; /* Ancho completo */
+  text-align: center; /* Centrar el texto */
+  padding: 15px;
+  background-color: #343a40; /* Fondo oscuro */
+  color: #fff; /* Color de texto blanco */
+  font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+  border-top: 1px solid #444; /* Borde superior sutil */
+}

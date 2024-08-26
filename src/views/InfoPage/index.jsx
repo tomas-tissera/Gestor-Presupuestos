@@ -21,7 +21,7 @@ function InfoPage() {
         <Navbar></Navbar>
         <Container className={styles.container}>
             <h2 className={styles.heading}>Información de la Página</h2>
-            <Row>
+            <Row className={styles.row}>
                 <Col md={6}>
                 <div className={styles.section}>
                     <h4 className={styles.title}>Librerías Usadas</h4>

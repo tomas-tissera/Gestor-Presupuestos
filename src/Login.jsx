@@ -45,7 +45,7 @@ const Login = () => {
     <div className="container">
       <div className="row justify-content-center">
         <FaCircleUser className="user" />
-        <form className="col-md-4 mt-3 pt-3 pb-3">
+        <form className="">
           {notice !== "" && (
             <div className="alert alert-warning" role="alert">
               {notice}

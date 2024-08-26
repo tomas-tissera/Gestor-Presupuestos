@@ -407,8 +407,8 @@ function DPresupuesto() {
                             <p className={styles.tituloDescripcionText}><strong>Nombre del Proyecto:</strong> <span className={styles.tituloDescripcion}>{presupuesto.nombre}</span></p>
                             <p className={styles.tituloDescripcionText}><strong>Descripción:</strong>  <span className={styles.tituloDescripcion}>{presupuesto.descripcion}</span></p>
                         </div>
-                        <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm="4"><strong className={styles.tituloDescripcionText}>Estado del Presupuesto:</strong></Form.Label>
+                        <Form.Group as={Row} className={styles.formEstado}>
+                            <Form.Label column sm="4" className={styles.formLabel}><strong className={styles.tituloDescripcionText}>Estado del Presupuesto:</strong></Form.Label>
                             <Col sm="6">
                                 <Form.Select
                                     value={estadoPresupuesto}
@@ -423,7 +423,7 @@ function DPresupuesto() {
 
                         <h5>Componentes:</h5>
                         {presupuesto.componentes.map((componente, index) => (
-                            <Form.Group as={Row} className="mb-3" key={index}>
+                            <Form.Group as={Row} key={index} className={styles.formEstado}>
                                 <Col sm="3">
                                     <Form.Control
                                         as="textarea"
@@ -481,7 +481,7 @@ function DPresupuesto() {
                         }, 0)}</p>
 
                         <h5>Añadir Componente</h5>
-                        <Form.Group as={Row} className="mb-3">
+                        <Form.Group as={Row}  className={styles.formEstado}>
                             <Col sm="3">
                                 <Form.Control
                                     as="textarea"
@@ -530,7 +530,7 @@ function DPresupuesto() {
                         </Form.Group>
 
                         <h5>Otros Componentes</h5>
-                        <Form.Group as={Row} className="mb-3">
+                        <Form.Group as={Row} className={styles.formEstado}>
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Url:</strong>
                             </Form.Label>
@@ -558,7 +558,7 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3">
+                        <Form.Group as={Row} className={styles.formEstado}>
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Aclaracion:</strong>
                             </Form.Label>
@@ -587,7 +587,7 @@ function DPresupuesto() {
                                 </Button>
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3">
+                        <Form.Group as={Row} className={styles.formEstado}>
                             <Form.Label column sm="2">
                                 <strong className={styles.tituloDescripcionText}>Método de Pago:</strong>
                             </Form.Label>
@@ -617,7 +617,7 @@ function DPresupuesto() {
                         </Form.Group>
                         {/* Formulario para agregar nuevo impuesto */}
                         <h4>Agregar Impuesto:</h4>
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className={styles.formEstado}>
                             <Col>
                                 <Form.Control
                                     type="text"
@@ -651,7 +651,7 @@ function DPresupuesto() {
                         <h4 className={styles.inpuestoTitulo}>Impuestos:</h4>
                         {impuestos.length > 0 ? (
                             impuestos.map((imp, index) => (
-                                <Form.Group as={Row} className="mb-3" key={index}>
+                                <Form.Group as={Row} className={styles.formEstado} key={index} >
                                     <Col sm="6">
                                         <Form.Control
                                             as="textarea"

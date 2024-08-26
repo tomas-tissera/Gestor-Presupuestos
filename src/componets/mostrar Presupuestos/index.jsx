@@ -88,8 +88,8 @@ function mPresupuestos() {
                 ) : (
                     <>
                         <h4>Lista de Presupuestos</h4>
-                        <Form>
-                            <Row className="mb-3">
+                        <Form className={styles.filtro}>
+                            <Row className={styles.filtro2}>
                                 <Col sm="6">
                                     <Form.Control
                                         type="text"

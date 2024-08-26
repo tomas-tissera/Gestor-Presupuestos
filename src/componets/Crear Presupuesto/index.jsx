@@ -184,7 +184,7 @@ const CrearPresupuesto = () => {
                     </Form.Label>
                     {componentes.map((componente, index) => (
                         <div key={index} className={styles.componenteContainer}>
-                            <Form.Group as={Row} className="mb-3">
+                            <Form.Group as={Row} className={styles.componenteRow}>
                                 <Col sm="3">
                                     <Form.Control
                                         as="textarea"
@@ -242,18 +242,19 @@ const CrearPresupuesto = () => {
                             <MdOutlinePlaylistAdd className={styles.icono} />
                         </a>
                     </div>
-                    <Form.Group as={Row} className="mb-3">
+                    <Form.Group as={Row} className={styles.totalGeneral}>
                         <Col sm="12" className="text-right">
                             <strong>Total General: ${calcularTotalGeneral()}</strong>
                         </Col>
                     </Form.Group>
-                    <div className="d-grid gap-2">
+                    <div className={styles.botonGenerar}>
                         <Button
                             variant="primary"
                             size="lg"
                             type="submit"
                             onClick={guardarPresupuesto}
                             disabled={calcularTotalGeneral() === 0}  // Deshabilitar si el total es 0
+                            className={styles.botonGenerarBTN}
                         >
                             Generar Presupuesto
                         </Button>

@@ -34,6 +34,7 @@
   .form-control {
     border-radius: 4px;
     padding: 10px;
+    width: 150px;
     border: 1px solid #ced4da;
     font-size: 1rem;
   }
